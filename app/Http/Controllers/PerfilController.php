@@ -91,6 +91,9 @@ public function cambiarContraseña(Request $request)
         ->where('PARAMETRO', 'FECHA_VENCIMIENTO')
         ->value('VALOR');
 
+        // Convertir el valor a un número entero
+$duracionDias = intval($duracionDias);
+
     if (!$duracionDias) {
         $duracionDias = 90; // Valor por defecto en caso de no encontrar el parámetro
     }

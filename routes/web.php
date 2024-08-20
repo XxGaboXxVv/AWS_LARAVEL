@@ -94,7 +94,7 @@ Route::middleware([App\Http\Middleware\LogPageChanges::class])->group(function (
     Route::post('/usuarios/eliminar', [UsuarioController::class, 'eliminar'])->name('usuarios.eliminar');
     Route::get('/reporte-usuarios', [UsuarioController::class, 'generarReporte'])->name('usuarios.reporte');
     Route::middleware('guest')->group(function () {
-    Route::get('/login', [LoginController::class, 'showLoginForm'])->name('Inicio_Sesion');
+    Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
     Route::get('password/reset/{token}', [UsuarioController::class, 'showResetPasswordForm'])->name('password.reset');
     Route::post('password/reset', [UsuarioController::class, 'resetPassword'])->name('password.update');
     Route::get('register/2fa/{id_usuario}', [UsuarioController::class, 'register2FA'])->name('register.2fa');
@@ -104,7 +104,7 @@ Route::middleware([App\Http\Middleware\LogPageChanges::class])->group(function (
 
 /*RUTAS PARA REINICIO DE CONTRASEÑA*/ 
 Route::middleware([App\Http\Middleware\LogPageChanges::class])->group(function () {
-Route::get('password/request', [UsuarioController::class, 'showForgotPasswordForm'])->name('password_request');
+Route::get('password/request', [UsuarioController::class, 'showForgotPasswordForm'])->name('password.request');
 Route::post('password/email', [UsuarioController::class, 'sendResetLinkEmail'])->name('password.email');
 Route::get('password/reset/{token}', [UsuarioController::class, 'showResetPasswordForm'])->name('password.reset');
 Route::post('password/reset-2fa/{id_usuario}', [UsuarioController::class, 'verifyResetPassword2FA'])->name('verify.reset.password.2fa');

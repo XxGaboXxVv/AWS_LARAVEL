@@ -341,6 +341,8 @@ class UsuarioController extends Controller
             $duracionDias = 90; // Valor por defecto en caso de no encontrar el parámetro
         }
     
+        // Convertir el valor a un número entero
+        $duracionDias = intval($duracionDias);
         // Calcular la nueva fecha de vencimiento
         $user->FECHA_VENCIMIENTO = Carbon::now()->addDays($duracionDias);
     

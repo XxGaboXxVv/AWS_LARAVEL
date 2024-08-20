@@ -124,6 +124,8 @@ $diasUmbral = DB::table('TBL_MS_PARAMETROS')
                 ->where('PARAMETRO', 'DIAS_ANTICIPACION_VENCIMIENTO')
                 ->value('VALOR');
 
+$diasUmbral = intval($diasUmbral);
+
 if (is_null($diasUmbral)) {
     $diasUmbral = 7; // Valor por defecto si no se encuentra el parámetro
 }
