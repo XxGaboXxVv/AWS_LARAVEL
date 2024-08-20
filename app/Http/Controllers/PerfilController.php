@@ -22,7 +22,7 @@ class PerfilController extends Controller
         $estadoUsuario = DB::table('TBL_ESTADO_USUARIO')
             ->where('ID_ESTADO_USUARIO', $user->ID_ESTADO_USUARIO)
             ->value('DESCRIPCION');
-        return view('perfil', [
+        return view('Perfil', [
             'userData' => [
                 'NOMBRE_USUARIO' => $user->NOMBRE_USUARIO,
                 'EMAIL' => $user->EMAIL,
