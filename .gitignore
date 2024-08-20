@@ -1,0 +1,28 @@
+# Laravel
+/vendor
+/node_modules
+/public/storage
+/storage/*.key
+.env
+.phpunit.result.cache
+Homestead.yaml
+Homestead.json
+/public/hot
+/public/storage
+/public/js/*.js
+/public/css/*.css
+
+# Laravel Mix
+npm-debug.log
+yarn-error.log
+
+# Composer
+composer.phar
+
+# Operating System Files
+.DS_Store
+Thumbs.db
+
+# IDEs and Editors
+/.idea
+/.vscode
