@@ -63,8 +63,9 @@
                                 <td>{{ $residente["DNI_PERSONA"] }}</td>
                                 <td>{{ $residente["TIPO_CONTACTO"] }}</td>
                                 <td>{{ $residente["CONTACTO"] }}</td>
-                                <td>{{ $residente["TIPO_PERSONA"] }}</td>
                                 <td>{{ $residente["ESTADO_PERSONA"] }}</td>
+                                <td>{{ $residente["CONDOMINIO"] }}</td>
+
                                 <td>
                                     <button type="button" class="btn btn-info" data-toggle="modal" data-target="#editarResidente{{ $residente['ID_PERSONA'] }}">Editar</button>
                                     <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#eliminarResidente{{ $residente['ID_PERSONA'] }}">Eliminar</button>
@@ -89,9 +90,10 @@
                                         <p>TIPO DE CONTACTO DEL RESIDENTE:{{ $residente["TIPO_CONTACTO"] }}</p>
                                         <p>CONTACTO DEL RESIDENTE: {{ $residente["CONTACTO"] }}</p>
                                         <p>TIPO DE RESIDENTE: {{ $residente["TIPO_PERSONA"]  }}</p>
+                                         <p>CONDOMINIO: {{ $residente["CONDOMINIO"] }}</p>
                                         <p>ESTADO DEL RESIDENTE: {{ $residente["ESTADO_PERSONA"] }}</p>
                                         <p>PARENTESCO: {{ $residente["PARENTESCO"] }}</p>
-                                        <p>CONDOMINIO: {{ $residente["CONDOMINIO"] }}</p>
+                                       
                                         
 
                                     </div>
