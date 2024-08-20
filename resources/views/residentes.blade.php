@@ -51,7 +51,7 @@
                             <th>TIPO DE CONTACTO DEL RESIDENTE</th>
                             <th>CONTACTO DEL RESIDENTE</th>
                             <th>TIPO DE RESIDENTE</th>
-                            <th>ESTADO DEL RESIDENTE</th>
+                            <th>CONDOMINIO</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
