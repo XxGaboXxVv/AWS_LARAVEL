@@ -30,7 +30,7 @@ class BackupController extends Controller
         $mysqldumpPath = '/usr/bin/mysqldump';
 
         // Captura tanto la salida como los errores
-   $command = "\"$mysqldumpPath\" --host=$dbHost --port=$dbPort --user=$dbUser --password=$dbPassword --no-tablespaces $dbName > \"$backupFile\" 2>&1";
+$command = "\"$mysqldumpPath\" --host=$dbHost --port=$dbPort --user=$dbUser --password=$dbPassword --no-tablespaces $dbName > \"$backupFile\" 2>/dev/null";
         exec($command, $output, $result);
 
         Log::info('mysqldump command: ' . $command);
