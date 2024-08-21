@@ -75,7 +75,7 @@ class BackupController extends Controller
 public function listBackups()
 {
     $backupPath = storage_path('app/laravel-backups/Acacias/');
-    $files = glob($backupPath . '*.zip');
+    $files = glob($backupPath . '*.zip'); // Filtra solo archivos ZIP
 
     $backups = [];
 
@@ -84,9 +84,12 @@ public function listBackups()
             'file_path' => $file,
             'file_name' => basename($file),
             'file_size' => filesize($file),
-            'is_zip' => strtolower(pathinfo($file, PATHINFO_EXTENSION)) === 'zip'
+            'is_zip' => true
         ];
     }
+
+    return view('backup', compact('backups'));
+}
 
     return view('backup', compact('backups'));
 }
