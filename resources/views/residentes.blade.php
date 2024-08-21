@@ -28,10 +28,12 @@
             <div class="card-tools">
             <div class="d-flex justify-content-end">
                 <button class="btn btn-primary mr-2" data-toggle="modal" data-target="#modalAgregarResidente">Nuevo</button>
+                
                 <form id="reporteForm" method="GET" action="{{ route('residentes.reporte') }}" target="_blank">
-                    <input type="hidden" name="nombre" id="searchInput">
-                    <button type="submit" class="btn btn-success mt-2">Generar Reporte</button>
+                <input type="hidden" name="nombre" id="searchInput">
+                <button type="submit" class="btn btn-success mt-2">Generar Reporte</button>
                 </form>
+                
             </div>
         </div>
     </div>
@@ -392,16 +394,17 @@
             ]
         });
         table.on('search.dt', function() {
-        var searchValue = table.search();  // Captura el valor de búsqueda actual
-        console.log("Valor de búsqueda capturado: " + searchValue);  // Verifica el valor
-        $('#searchInput').val(searchValue);  // Asigna el valor al campo oculto del formulario
-    });
+    var searchValue = table.search();  // Captura el valor de búsqueda actual
+    console.log("Valor de búsqueda capturado: " + searchValue);  // Verifica el valor
+    $('#searchInput').val(searchValue);  // Asigna el valor al campo oculto del formulario
+});
 
-    // Verifica el valor antes de enviar el formulario
-    $('#reporteForm').on('submit', function(e) {
-        var searchValue = $('#searchInput').val();
-        console.log("Valor enviado para el reporte: " + searchValue);  // Verifica el valor antes de enviar el formulario
-    });
+// Verifica el valor antes de enviar el formulario
+$('#reporteForm').on('submit', function(e) {
+    var searchValue = $('#searchInput').val();
+    console.log("Valor enviado para el reporte: " + searchValue);  // Verifica el valor antes de enviar el formulario
+});
+
 // Función para convertir a mayúsculas
 function convertirAMayusculas() {
         // Especificar los campos que deben ser convertidos a mayúsculas
