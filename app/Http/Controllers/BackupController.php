@@ -32,7 +32,7 @@ class BackupController extends Controller
         }
 
         // Ruta completa al binario de mysqldump
-        $mysqldumpPath = 'C:\Program Files\MySQL\MySQL Server 8.0.6\bin\mysqldump.exe';
+        $mysqldumpPath = '/usr/bin/mysqldump';  // Asegúrate de usar la ruta correcta
 
         // Crea el comando para realizar el respaldo y redirige el error estándar a null
         $command = "\"$mysqldumpPath\" --host=$dbHost --port=$dbPort --user=$dbUser --password=$dbPassword --no-tablespaces $dbName > \"$backupFile\" 2>nul";
