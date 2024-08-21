@@ -7,56 +7,43 @@ use Storage;
 
 class BackupController extends Controller
 {
-    public function createBackup()
+   public function createBackup()
 {
     try {
-        // Establecer la zona horaria
         date_default_timezone_set('America/Tegucigalpa');
 
-        // Obtén las configuraciones de la base de datos desde el archivo de configuración
         $dbHost = env('DB_HOST');
         $dbPort = env('DB_PORT');
         $dbName = env('DB_DATABASE');
         $dbUser = env('DB_USERNAME');
         $dbPassword = env('DB_PASSWORD');
 
-        // Define el nombre y la ruta del archivo de respaldo
         $backupPath = storage_path('app/laravel-backups/Acacias/');
         $timestamp = date('Y-m-d_H-i-s');
         $backupFile = $backupPath . $dbName . '_backup_' . $timestamp . '.sql';
         $zipFile = $backupPath . $dbName . '_backup_' . $timestamp . '.zip';
 
-        // Asegúrate de que el directorio de respaldo exista
         if (!file_exists($backupPath)) {
             mkdir($backupPath, 0755, true);
         }
 
-        // Ruta completa al binario de mysqldump
-        $mysqldumpPath = '/usr/bin/mysqldump';  // Asegúrate de usar la ruta correcta
+        $mysqldumpPath = '/usr/bin/mysqldump';
 
-        // Crea el comando para realizar el respaldo y redirige el error estándar a null
-        $command = "\"$mysqldumpPath\" --host=$dbHost --port=$dbPort --user=$dbUser --password=$dbPassword --no-tablespaces $dbName > \"$backupFile\" 2>nul";
-
-        // Ejecuta el comando del sistema
+        // Captura tanto la salida como los errores
+        $command = "\"$mysqldumpPath\" --host=$dbHost --port=$dbPort --user=$dbUser --password=$dbPassword --no-tablespaces $dbName > \"$backupFile\" 2>&1";
         exec($command, $output, $result);
 
-        if ($result !== 0) {
-            Log::error('mysqldump error: ' . implode("\n", $output));
-            throw new \Exception('Error al ejecutar el comando mysqldump.');
+        Log::info('mysqldump command: ' . $command);
+        Log::info('mysqldump output: ' . implode("\n", $output));
+
+        if ($result !== 0 || filesize($backupFile) == 0) {
+            throw new \Exception('Error al ejecutar el comando mysqldump: ' . implode("\n", $output));
         }
 
-        // Verifica que el archivo SQL se haya creado y tenga un tamaño mayor a 0 bytes
-        if (filesize($backupFile) == 0) {
-            throw new \Exception('El archivo SQL generado está vacío.');
-        }
-
-        // Crear un archivo ZIP del respaldo SQL
         $zip = new \ZipArchive();
         if ($zip->open($zipFile, \ZipArchive::CREATE) === TRUE) {
             $zip->addFile($backupFile, basename($backupFile));
             $zip->close();
-
-            // Eliminar el archivo SQL después de comprimirlo
             unlink($backupFile);
         } else {
             throw new \Exception('No se pudo crear el archivo ZIP.');
@@ -70,6 +57,7 @@ class BackupController extends Controller
         return redirect()->back()->withErrors(['error' => 'Error al realizar el respaldo']);
     }
 }
+
 
 
 public function listBackups()
