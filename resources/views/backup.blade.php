@@ -27,26 +27,26 @@
                 </thead>
                 <tbody>
     @forelse($backups as $backup)
-        <tr>
-            <td>{{ $backup['file_name'] }}</td>
-            <td>{{ number_format($backup['file_size'] / 1048576, 2) }} MB</td>
-            <td>
-                <a href="{{ route('backups.download', $backup['file_name']) }}" class="btn btn-success">Descargar</a>
-                <form action="{{ route('backups.delete', $backup['file_name']) }}" method="POST" style="display:inline;">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="btn btn-danger">Eliminar</button>
-                </form>
-                @if (!$backup['is_zip'])
-                    <a href="{{ route('backups.zip', $backup['file_name']) }}" class="btn btn-info">Convertir a ZIP</a>
-                @endif
-            </td>
-        </tr>
-    @empty
-        <tr>
-            <td colspan="3">No hay respaldos disponibles.</td>
-        </tr>
-    @endforelse
+    <tr>
+        <td>{{ $backup['file_name'] }}</td>
+        <td>{{ number_format($backup['file_size'] / 1048576, 2) }} MB</td>
+        <td>
+            <a href="{{ route('backups.download', $backup['file_name']) }}" class="btn btn-success">Descargar</a>
+            <form action="{{ route('backups.delete', $backup['file_name']) }}" method="POST" style="display:inline;">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="btn btn-danger">Eliminar</button>
+            </form>
+            @if (!$backup['is_zip'])
+                <a href="{{ route('backups.zip', $backup['file_name']) }}" class="btn btn-info">Convertir a ZIP</a>
+            @endif
+        </td>
+    </tr>
+@empty
+    <tr>
+        <td colspan="3">No hay respaldos disponibles.</td>
+    </tr>
+@endforelse
 </tbody>
             </table>
         </div>
