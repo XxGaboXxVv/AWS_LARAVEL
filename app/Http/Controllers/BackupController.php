@@ -91,7 +91,6 @@ public function listBackups()
     return view('backup', compact('backups'));
 }
 
-    return view('backup', compact('backups'));
 }
     
     public function downloadBackup($file_name)
