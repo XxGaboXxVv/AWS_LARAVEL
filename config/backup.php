@@ -347,7 +347,7 @@ return [
             '--routines',
             '--triggers',
         ],
-        'dump_command_path' => 'C:\Program Files\MySQL\MySQL Server 8.0.6\bin\mysqldump.exe',
+        'dump_command_path' => '/usr/bin/mysqldump',
     'dump_command_timeout' => 60 * 5, // 5 minutos
     ],
 ],
