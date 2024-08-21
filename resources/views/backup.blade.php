@@ -40,6 +40,7 @@
             @if (!$backup['is_zip'])
                 <a href="{{ route('backups.zip', $backup['file_name']) }}" class="btn btn-info">Convertir a ZIP</a>
             @endif
+            <pre>{{ print_r($backups) }}</pre>
         </td>
     </tr>
 @empty
