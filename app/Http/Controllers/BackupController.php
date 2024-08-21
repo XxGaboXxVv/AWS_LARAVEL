@@ -74,20 +74,18 @@ class BackupController extends Controller
 
 public function listBackups()
 {
-    $disk = Storage::disk(config('backup.backup.destination.disks')[0]);
-    $files = $disk->files(config('backup.backup.name'));
+    $backupPath = storage_path('app/laravel-backups/Acacias/');
+    $files = glob($backupPath . '*.zip');
 
     $backups = [];
 
     foreach ($files as $file) {
-        if ($disk->exists($file)) {
-            $backups[] = [
-                'file_path' => $file,
-                'file_name' => basename($file), // Corrección para extraer solo el nombre del archivo
-                'file_size' => $disk->size($file),
-                'is_zip' => strtolower(pathinfo($file, PATHINFO_EXTENSION)) === 'zip'
-            ];
-        }
+        $backups[] = [
+            'file_path' => $file,
+            'file_name' => basename($file),
+            'file_size' => filesize($file),
+            'is_zip' => strtolower(pathinfo($file, PATHINFO_EXTENSION)) === 'zip'
+        ];
     }
 
     return view('backup', compact('backups'));
