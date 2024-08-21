@@ -92,6 +92,7 @@ public function listBackups()
 }
 
 }
+}
     
     public function downloadBackup($file_name)
     {
