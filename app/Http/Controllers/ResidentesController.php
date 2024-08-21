@@ -335,7 +335,9 @@ public function eliminar($id)
 
 public function generarReporte(Request $request)
 {   
-    $query = strtoupper($request->input('nombre'));  // Captura el valor de búsqueda del formulario
+    // Captura el valor de búsqueda del formulario
+    $query = strtoupper($request->input('nombre'));
+
     $baseUrl = Config::get('api.base_url'); // Obtiene la URL base de la API desde la configuración
     $url = $baseUrl . '/SEL_PERSONA';
     $response = Http::get($url);
@@ -343,14 +345,14 @@ public function generarReporte(Request $request)
     if ($response->successful()) {
         $Residentes = $response->json();
 
-       // Obtener datos adicionales
-       $Contacto = $this->getContacto();
-       $TipoContacto = $this->getTipoContacto();
-       $tipopersona = $this->getTipoPersona();
-       $estadopersona = $this->getEstadoPersona();
-       $Parentesco = $this->getParentesco();
-       $Condominio = $this->getCondominio();
-       $TipoCondominio = $this->getTipoCondominio();
+        // Obtener datos adicionales
+        $Contacto = $this->getContacto();
+        $TipoContacto = $this->getTipoContacto();
+        $tipopersona = $this->getTipoPersona();
+        $estadopersona = $this->getEstadoPersona();
+        $Parentesco = $this->getParentesco();
+        $Condominio = $this->getCondominio();
+        $TipoCondominio = $this->getTipoCondominio();
 
         // Asignar las descripciones de roles y estados a los usuarios
         foreach ($Residentes as &$residente) {
@@ -366,12 +368,16 @@ public function generarReporte(Request $request)
             $residente['CONDOMINIO'] = $condominio->DESCRIPCION ?? 'Desconocido';
             $residente['ID_TIPO_CONDOMINIO'] = $condominio->ID_TIPO_CONDOMINIO ?? 'Desconocido';
         }
-        // Filtrar los usuarios si se ha proporcionado un nombre
+
+        // Filtrar los usuarios si se ha proporcionado un valor de búsqueda
         if ($query) {
             $Residentes = array_filter($Residentes, function($residente) use ($query) {
-                return stripos($residente['NOMBRE_PERSONA'], $query) !== false;
+                $matchResidente = stripos($residente['NOMBRE_PERSONA'], $query) !== false;
+                $matchCondominio = stripos($residente['CONDOMINIO'], $query) !== false;
+                return $matchResidente || $matchCondominio; // Cambia && por || para permitir coincidencias en cualquiera de los dos campos
             });
         }
+
         $this->logActivity('reporte de roles', 'get', [], [], ['filtro' => $query]);
 
         // Generar el PDF
@@ -382,6 +388,4 @@ public function generarReporte(Request $request)
         return back()->withErrors(['error' => 'No se pudo obtener la lista de residentes.']);
     }
 }
-
-
 }
