@@ -65,6 +65,9 @@ class VisitanteRecurrente extends Controller
     ]);
 
     try {
+        // Iniciar transacción
+        DB::beginTransaction();
+
         // Verificar si la persona existe
         $persona = DB::table('TBL_PERSONAS')
             ->where('NOMBRE_PERSONA', $data['persona_descripcion'])
@@ -89,6 +92,8 @@ class VisitanteRecurrente extends Controller
             'FECHA_VENCIMIENTO' => $data['fecha_vencimiento'],
         ]);
 
+        \Log::info('Nuevo visitante recurrente creado con ID:', [$idVisitante]);
+
         // Crear nuevo registro de bitácora de visita
         DB::table('TBL_BITACORA_VISITA')->insert([
             'ID_PERSONA' => $persona->ID_PERSONA,
@@ -99,11 +104,20 @@ class VisitanteRecurrente extends Controller
             'FECHA_VENCIMIENTO' => $data['fecha_vencimiento'],
         ]);
 
-        // Registrar la actividad en los logs (opcional)
+        \Log::info('Registro de bitácora de visita creado para ID_VISITANTE:', [$idVisitante]);
+
+        // Registrar la actividad en los logs
         $this->logActivity('visitante recurrente', 'post', $data);
+
+        // Confirmar la transacción
+        DB::commit();
 
         return response()->json(['success' => 'Visitante recurrente creado con éxito.']);
     } catch (\Exception $e) {
+        // Revertir la transacción en caso de error
+        DB::rollBack();
+
+        \Log::error('Error al crear visitante recurrente:', [$e->getMessage()]);
         return response()->json(['error' => 'Se produjo un error: ' . $e->getMessage()], 500);
     }
 }
@@ -214,7 +228,7 @@ class VisitanteRecurrente extends Controller
 
 
 
-public function eliminar($id)
+    public function eliminar($id)
 {
     try {
             $this->authorize('delete', User::class);
@@ -240,14 +254,17 @@ public function eliminar($id)
     ]);
 
     if ($deleteResponse->successful()) {
-        $descripcion = 'Visitante recurrente eliminado: ' . $visitanteRecurrenteActual['ID_PERSONA'] . ' (ID: ' . $id . ')';
-        $this->logActivity($descripcion, 'DELETE');
+        $this->logActivity('reserva', 'delete', [], $visitanteRecurrenteActual);
         return response()->json(['success' => 'Visitante recurrente eliminado con éxito.']);
     } else {
-        return response()->json(['error' => 'Error al eliminar visitante recurrente.'], 500);
-    }
+        $errorMessage = $deleteResponse->json('error'); // Asegúrate de capturar el mensaje de error
+        if (str_contains($errorMessage, 'relacionado con otros registros')) {
+            return response()->json(['error' => 'No se puede eliminar el Visitante porque está relacionado con otros registros.']);
+        }
+        return response()->json(['error' => 'Error al eliminar Visitante.']);
 }
 
+}
     public function generarReporte(Request $request)
 {
     $query = strtoupper($request->input('persona_descripcion'));
