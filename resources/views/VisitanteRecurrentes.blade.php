@@ -105,8 +105,8 @@
                     </div>
                 </div>
 
-               <!-- Modal de eliminar visitante recurrente -->
-               <div class="modal fade" id="eliminarVisitanteRecurrenteModal{{ $recurrente['ID_VISITANTES_RECURRENTES'] }}" tabindex="-1" role="dialog" aria-labelledby="eliminarVisitanteRecurrenteModalLabel{{ $recurrente['ID_VISITANTES_RECURRENTES'] }}" aria-hidden="true">
+                <!-- Modal de eliminar visitante recurrente -->
+                <div class="modal fade" id="eliminarVisitanteRecurrenteModal{{ $recurrente['ID_VISITANTES_RECURRENTES'] }}" tabindex="-1" role="dialog" aria-labelledby="eliminarVisitanteRecurrenteModalLabel{{ $recurrente['ID_VISITANTES_RECURRENTES'] }}" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -116,7 +116,7 @@
                                 </button>
                             </div>
                             <div class="modal-body">
-                            <p>¿Estás seguro de que deseas eliminar este visitante recurrente "{{ $recurrente['ID_PERSONA'] }}"?</p>
+                            <p>¿Estás seguro de que deseas eliminar este visitante recurrente "{{ $recurrente['ID_VISITANTES_RECURRENTES'] }}"?</p>
                            </div>
                           <div class="modal-footer">
                           <form class="eliminar-visitante-recurrente-form" data-id="{{ $recurrente['ID_VISITANTES_RECURRENTES'] }}" method="POST">
@@ -225,11 +225,11 @@
     $(document).ready(function() {
         var table = $('#visitantes-recurrentes-table').DataTable({
             "language": {
-                "lengthMenu": "Mostrar MENU registros por página",
+                "lengthMenu": "Mostrar _MENU_ registros por página",
                 "zeroRecords": "No se encontraron resultados",
-                "info": "Mostrando página PAGE de PAGES",
+                "info": "Mostrando página _PAGE_ de _PAGES_",
                 "infoEmpty": "No hay registros disponibles",
-                "infoFiltered": "(filtrado de MAX registros totales)",
+                "infoFiltered": "(filtrado de _MAX_ registros totales)",
                 "search": "Buscar:",
                 "paginate": {
                     "first": "Primero",
@@ -536,5 +536,5 @@ function permitirSoloNumerosPositivos() {
     window.open('{{ route("visitante-recurrente.reporte") }}', '_blank');
 });
 });
-   </script>
+   </script>
 @stop
