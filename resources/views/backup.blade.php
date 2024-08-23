@@ -17,6 +17,7 @@
             </div>
         </div>
         <div class="card-body">
+                @if($hasPermission)
             <table class="table table-bordered">
                 <thead>
                     <tr>
@@ -51,6 +52,11 @@
             </table>
         </div>
     </div>
+ @else
+            <div class="alert alert-danger">
+                No tienes permisos para ver los parametros.
+            </div>
+        @endif
 @stop
 @section('js')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
