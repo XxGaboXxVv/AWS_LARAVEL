@@ -24,6 +24,7 @@
         </div>
 
         <div class="card-body">
+                @if($hasPermission)
             <div class="table-container">
                 <table id="bitacora-usuario-table" class="table table-striped table-bordered shadow-lg mt-4" style="width: 100%">
                     <thead class="bg-primary text-white">
@@ -142,6 +143,11 @@
         </div>
     </div>
 </div>
+     @else
+            <div class="alert alert-danger">
+                No tienes permisos para ver los la bitacora de usuario.
+            </div>
+        @endif
 @stop
 
 @section('css')
