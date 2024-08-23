@@ -23,6 +23,7 @@
     </div>
   
     <div class="card-body">
+            @if($hasPermission)
         <div class="table-container">
             <table id="permisos-table" class="table table-striped table-bordered shadow-lg mt-4" style="width: 100%">
                 <thead class="bg-primary text-white">
@@ -185,7 +186,11 @@
                 </tbody>
             </table>
         </div>
-       
+        @else
+            <div class="alert alert-danger">
+                No tienes permisos para ver los parametros.
+            </div>
+        @endif
     </div>
    
     <!-- Modal de nuevo permiso -->
