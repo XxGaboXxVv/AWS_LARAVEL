@@ -71,6 +71,13 @@ $command = "\"$mysqldumpPath\" --host=$dbHost --port=$dbPort --user=$dbUser --pa
 
 public function listBackups()
 {
+    $hasPermission = true;
+    try {
+        $this->authorize('view', User::class);
+    } catch (AuthorizationException $e) {
+        $hasPermission = false;
+    }
+
     $backupPath = storage_path('app/laravel-backups/Acacias/');
     $files = array_merge(
         glob($backupPath . '*.zip'), // Filtra archivos ZIP
@@ -93,7 +100,7 @@ public function listBackups()
         ];
     }
 
-    return view('backup', compact('backups'));
+    return view('backup', compact('backups','hasPermission'));
 }
 
     
