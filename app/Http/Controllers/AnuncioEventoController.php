@@ -174,10 +174,10 @@ class AnuncioEventoController extends Controller
 
     public function eliminar(Request $request)
     {
-        try {
-            $this->authorize('delete', User::class); 
+       try {
+            $this->authorize('delete', User::class);
         } catch (AuthorizationException $e) {
-            return response()->json(['error'=> 'No tienes permisos para poder Eliminar.']);
+            return redirect()->back()->with('error', 'No tienes permisos para poder Eliminar.');
         }
         $id = $request->input('ID_ANUNCIOS_EVENTOS');
 
