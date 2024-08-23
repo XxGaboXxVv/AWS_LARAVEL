@@ -68,6 +68,11 @@ public function listBackups()
         glob($backupPath . '*.sql')  // Filtra archivos SQL
     );
 
+    // Ordenar los archivos por fecha de modificación, más reciente primero
+    usort($files, function($a, $b) {
+        return filemtime($b) - filemtime($a);
+    });
+
     $backups = [];
 
     foreach ($files as $file) {
@@ -81,6 +86,7 @@ public function listBackups()
 
     return view('backup', compact('backups'));
 }
+
     
     public function downloadBackup($file_name)
 {
