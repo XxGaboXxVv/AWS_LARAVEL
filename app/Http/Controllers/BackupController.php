@@ -4,9 +4,13 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Storage;
+use Illuminate\Auth\Access\AuthorizationException;
+use App\Traits\HandlesAuthorizationExceptions;
 
 class BackupController extends Controller
 {
+        use HandlesAuthorizationExceptions;
+
    public function createBackup()
 {
      try {
