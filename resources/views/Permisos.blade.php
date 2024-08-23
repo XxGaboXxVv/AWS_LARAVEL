@@ -253,7 +253,11 @@
             </div>
         </div>
     </div>
-
+ @else
+            <div class="alert alert-danger">
+                No tienes permisos para ver los parametros.
+            </div>
+        @endif
 @stop
 
 @section('css')
