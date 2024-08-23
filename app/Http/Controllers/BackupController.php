@@ -16,7 +16,7 @@ class BackupController extends Controller
      try {
             $this->authorize('insert', User::class);
         } catch (AuthorizationException $e) {
-            return response()->json(['error'=> 'No tienes permisos para poder Crear.']);
+            return redirect()->back()->with('error', 'No tienes permisos para poder Crear.');
         }
     try {
         date_default_timezone_set('America/Tegucigalpa');
@@ -111,9 +111,9 @@ public function listBackups()
 public function deleteBackup($file_name)
 {
     try {
-            $this->authorize('delete', User::class); 
+            $this->authorize('delete', User::class);
         } catch (AuthorizationException $e) {
-            return response()->json(['error'=> 'No tienes permisos para poder Eliminar.']);
+            return redirect()->back()->with('error', 'No tienes permisos para poder Eliminar.');
         }
     try {
         $backupPath = storage_path('app/laravel-backups/Acacias/') . $file_name;
