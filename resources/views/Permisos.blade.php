@@ -186,11 +186,7 @@
                 </tbody>
             </table>
         </div>
-        @else
-            <div class="alert alert-danger">
-                No tienes permisos para ver los parametros.
-            </div>
-        @endif
+       
     </div>
    
     <!-- Modal de nuevo permiso -->
