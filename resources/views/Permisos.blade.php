@@ -255,7 +255,7 @@
     </div>
  @else
             <div class="alert alert-danger">
-                No tienes permisos para ver los parametros.
+                No tienes permisos para ver los permisos.
             </div>
         @endif
 @stop
