@@ -195,7 +195,7 @@ public function editar(Request $request, $id)
         'ID_TIPO_PERSONA' => 'required|integer',
         'id_parentesco' => 'required|integer',
         'condominio_descripcion' => 'required|string|max:255',
-        'id_padre' => 'required|integer',
+        'id_padre' => 'nullable|integer',
     ]);
 
     // Verificar si el nuevo condominio existe
