@@ -189,7 +189,7 @@
 
                     <div class="form-group">
                         <label for="id_padre">ID PADRE:</label>
-                        <input type="number" class="form-control" id="id_padre" name="id_padre" value="{{ $residente['ID_PADRE'] }}" required>
+                        <input type="number" class="form-control" id="id_padre" name="id_padre" value="{{ $residente['ID_PADRE'] }}" >
                     </div>
                     <button type="submit" class="btn btn-primary">Guardar Cambios</button>
                 </form>
