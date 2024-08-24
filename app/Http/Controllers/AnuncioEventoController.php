@@ -31,9 +31,9 @@ class AnuncioEventoController extends Controller
     $anunciosEventos = collect($response->json());
 
     // Ordena los anuncios por la fecha más reciente
-    $anunciosEventos = $anunciosEventos->sortByDesc(function ($evento) {
-        return $evento['FECHA_HORA'];
-    });
+$anunciosEventos = $anunciosEventos->sortByDesc(function ($evento) {
+    return \Carbon\Carbon::parse($evento['FECHA_HORA'])->setTimezone('America/Tegucigalpa')->format('Y-m-d H:i');
+});
 
     $estadosAnuncio = $this->getEstadosAnuncio();
     foreach ($anunciosEventos as &$evento) {
