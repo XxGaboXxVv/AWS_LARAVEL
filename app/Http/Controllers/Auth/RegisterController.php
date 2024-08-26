@@ -152,23 +152,26 @@ class RegisterController extends Controller
         }
     }
 
-    protected function sendAdminNotification($userData)
-    {
-        $superAdmin = User::where('ID_ROL', 1)->first(); // Suponiendo que el superadmin tiene el rol con ID 1
+   protected function sendAdminNotification($userData)
+{
+    // Obtén todos los administradores con el rol ID 1
+    $admins = User::where('ID_ROL', 1)->get();
 
-        if ($superAdmin) {
-            $data = [
-                'nombre' => $userData['NOMBRE_USUARIO'],
-                'email' => $userData['EMAIL'],
-                'userId' => $userData['ID_USUARIO'], // Asegurarse de pasar el ID del usuario
-            ];
+    // Datos del nuevo usuario
+    $data = [
+        'nombre' => $userData['NOMBRE_USUARIO'],
+        'email' => $userData['EMAIL'],
+        'userId' => $userData['ID_USUARIO'], // Asegúrate de pasar el ID del usuario
+    ];
 
-            Mail::send('emails.new_user_registration', $data, function ($message) use ($superAdmin) {
-                $message->to($superAdmin->EMAIL, $superAdmin->NOMBRE_USUARIO)
-                    ->subject('Nuevo usuario pendiente de aprobación');
-            });
-        }
+    // Envía el correo a cada administrador
+    foreach ($admins as $admin) {
+        Mail::send('emails.new_user_registration', $data, function ($message) use ($admin) {
+            $message->to($admin->EMAIL, $admin->NOMBRE_USUARIO)
+                ->subject('Nuevo usuario pendiente de aprobación');
+        });
     }
+}
 
     public function approveUser($userId)
     {
