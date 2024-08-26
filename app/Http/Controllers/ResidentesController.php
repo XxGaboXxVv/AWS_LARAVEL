@@ -69,7 +69,7 @@ class ResidentesController extends Controller
 
             return view('residentes', compact('Residentes', 'Condominio','Contacto', 'TipoContacto', 'tipopersona', 'estadopersona', 'Parentesco','TipoCondominio','hasPermission'));
         } else {
-            return view('error')->withErrors('Error al obtener la lista de Residentes.');
+            return view('residentes')->withErrors('Error al obtener la lista de Residentes.');
         }
     }
 
