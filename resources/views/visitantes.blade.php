@@ -64,7 +64,7 @@
                             <td>{{ $regvisita["DNI_VISITANTE"] }}</td>
                             <td>{{ $regvisita["NUM_PERSONAS"] }}</td>
                             <td>{{ $regvisita["NUM_PLACA"] ?? 'N/A' }}</td>
-                            <td>{{ $regvisita["FECHA_HORA"] }}</td>
+                            <td>{{ $regvisita["FECHA_HORA"] ? \Carbon\Carbon::parse($regvisita['FECHA_HORA'])->format('Y-m-d h:i:s') : '' }}</td>
                             <td>
                                 <button type="button" class="btn btn-info" data-toggle="modal" data-target="#editarVisitante{{ $regvisita['ID_VISITANTE'] }}">Editar</button>
                                 <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#eliminarVisitante{{ $regvisita['ID_VISITANTE'] }}">Eliminar</button>
