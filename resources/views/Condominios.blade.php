@@ -270,7 +270,7 @@ function convertirAMayusculas() {
  // Función para restringir caracteres especiales
  function restringirCaracteres() {
         // Especificar los campos que deben ser restringidos
-        var fieldsToRestrict = ['tipo_condominio', 'descripcion'];
+        var fieldsToRestrict = ['tipo_condominio'];
         fieldsToRestrict.forEach(function(fieldId) {
             var inputs = document.querySelectorAll('input[id^="' + fieldId + '"]');
             inputs.forEach(function(input) {
@@ -278,6 +278,23 @@ function convertirAMayusculas() {
                     const validChars = /^[a-zA-Z\s]*$/;
                     if (!validChars.test(input.value)) {
                         input.value = input.value.replace(/[^a-zA-Z\s]/g, '');
+                    }
+                });
+            });
+        });
+    }
+    
+     // Función para restringir ciertos caracteres en campos de contacto y DNI
+    function restringirCaracteresContactoDNI() {
+        // Especificar los campos que deben ser restringidos
+        var fieldsToRestrict = ['descripcion'];
+        var invalidChars = /[<>(){}[\]=;%^&*,"':]/g;
+        fieldsToRestrict.forEach(function(fieldId) {
+            var inputs = document.querySelectorAll('input[id^="' + fieldId + '"]');
+            inputs.forEach(function(input) {
+                input.addEventListener('input', function(e) {
+                    if (invalidChars.test(input.value)) {
+                        input.value = input.value.replace(invalidChars, '');
                     }
                 });
             });
@@ -309,7 +326,7 @@ function convertirAMayusculas() {
   // Asignar evento input a los campos específicos
   restringirCaracteres(); 
   limitarTamañoCaracteres();
-
+restringirCaracteresContactoDNI();
        // AJAX form submission for creating a condominios
      $('#nuevo-condominio-form').on('submit', function(event) {
             event.preventDefault();
