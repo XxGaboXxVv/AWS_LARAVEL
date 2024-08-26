@@ -50,8 +50,8 @@
                     <td>{{ $recurrente['DNI_VISITANTE'] }}</td>
                     <td>{{ $recurrente['NUM_PERSONAS'] }}</td>
                     <td>{{ $recurrente['NUM_PLACA'] }}</td>
-                    <td>{{ $recurrente['FECHA_HORA'] ? \Carbon\Carbon::parse($recurrente['FECHA_HORA'])->format('Y-m-d') : '' }}</td>
-                    <td>{{ $recurrente['FECHA_VENCIMIENTO'] ? \Carbon\Carbon::parse($recurrente['FECHA_VENCIMIENTO'])->format('Y-m-d') : '' }}</td>
+                    <td>{{ $recurrente['FECHA_HORA'] ? \Carbon\Carbon::parse($recurrente['FECHA_HORA'])->format('Y-m-d h:i:s') : '' }}</td>
+                    <td>{{ $recurrente['FECHA_VENCIMIENTO'] ? \Carbon\Carbon::parse($recurrente['FECHA_VENCIMIENTO'])->format('Y-m-d h:i:s') : '' }}</td>
                     <td>
                         <button type="button" class="btn btn-info" data-toggle="modal" data-target="#editarVisitanteRecurrenteModal{{ $recurrente['ID_VISITANTES_RECURRENTES'] }}">Editar</button>
                         <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#eliminarVisitanteRecurrenteModal{{ $recurrente['ID_VISITANTES_RECURRENTES'] }}">Eliminar</button>
