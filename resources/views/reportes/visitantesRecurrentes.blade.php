@@ -64,9 +64,6 @@ html>
         </div>
     </div>
 
-    <div class="details">
-        <p>Fecha y Hora: {{ \Carbon\Carbon::now()->setTimezone('America/Tegucigalpa')->format('Y-m-d H:i:s') }}</p>
-    </div>
 
     <div class="title">
         <h1>Reporte de Visitantes Recurrentes</h1>
@@ -76,14 +73,13 @@ html>
         <thead>
             <tr>
                         <th>#</th>
-                        <th>PERSONA</th>
-                        <th>NOMBRE VISITANTE</th>
-                        <th>DNI VISITANTE</th>
+                        <th>NOMBRE DEL RESIDENTE</th>
+                        <th>NOMBRE DEL VISITANTE</th>
+                        <th>DNI DEL VISITANTE</th>
                         <th>NÚMERO DE PERSONAS</th>
                         <th>NÚMERO DE PLACA</th>
                         <th>FECHA Y HORA</th>
                         <th>FECHA DE VENCIMIENTO</th>
-                        <th>ACCIONES</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -95,14 +91,17 @@ html>
                             <td>{{ $recurrente['DNI_VISITANTE'] }}</td>
                             <td>{{ $recurrente['NUM_PERSONAS'] }}</td>
                             <td>{{ $recurrente['NUM_PLACA'] }}</td>
-                            <td>{{ $recurrente['FECHA_HORA'] ? \Carbon\Carbon::parse($recurrente['FECHA_HORA'])->format('Y-m-d') : '' }}</td>
-                            <td>{{ $recurrente['FECHA_VENCIMIENTO'] ? \Carbon\Carbon::parse($recurrente['FECHA_VENCIMIENTO'])->format('Y-m-d') : '' }}</td>
+                            <td>{{ $recurrente['FECHA_HORA'] ? \Carbon\Carbon::parse($recurrente['FECHA_HORA'])->format('Y-m-d h:i:s') : '' }}</td>
+                            <td>{{ $recurrente['FECHA_VENCIMIENTO'] ? \Carbon\Carbon::parse($recurrente['FECHA_VENCIMIENTO'])->format('Y-m-d h:i:s') : '' }}</td>
                             </tr>
             @endforeach
         </tbody>
     </table>
 
     <div class="footer">
+        <div class="details">
+        <p>Fecha y Hora: {{ \Carbon\Carbon::now()->setTimezone('America/Tegucigalpa')->format('Y-m-d H:i:s') }}</p>
+    </div>
         <script type="text/php">
             if (isset($pdf)) {
                 $pdf->page_script('
