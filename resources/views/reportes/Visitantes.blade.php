@@ -87,7 +87,7 @@ html>
                 <td>{{ $regvisita['DNI_VISITANTE'] }}</td>
                 <td>{{ $regvisita['NUM_PERSONAS'] }}</td>
                 <td>{{ $regvisita['NUM_PLACA'] }}</td>
-                <td>{{ $regvisita['FECHA_HORA'] ? \Carbon\Carbon::parse($regvisita['FECHA_HORA'])->setTimezone('America/Tegucigalpa')->format('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ $regvisita["FECHA_HORA"] ? \Carbon\Carbon::parse($regvisita['FECHA_HORA'])->format('Y-m-d h:i:s') : '' }}</td>
             </tr>
             @endforeach
         </tbody>
