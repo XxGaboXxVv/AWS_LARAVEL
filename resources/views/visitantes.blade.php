@@ -29,7 +29,7 @@
             <div class="d-flex justify-content-end">
                 <button class="btn btn-primary mr-2" data-toggle="modal" data-target="#modalAgregarVisitante">Nuevo</button>
                 <form id="reporteForm" method="GET" action="{{ route('visitantes.reporte') }}" target="_blank">
-                    <input type="hidden" name="persona_descripcion" id="searchInput">
+                    <input type="hidden" name="nombre" id="searchInput">
                     <button type="submit" class="btn btn-success mt-2">Generar Reporte</button>
                 </form>
             </div>
