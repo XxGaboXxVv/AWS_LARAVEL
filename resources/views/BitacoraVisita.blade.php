@@ -45,6 +45,7 @@
                         <th>ID</th>
                         <th>Residente</th>
                         <th>VISITANTE</th>
+                        <th>VISITANTE RECURRENTE</th>
                         <th>NUMERO DE PERSONAS</th>
                         <th>NUMERO DE PLACA</th>
                         <th>FECHA Y HORA</th>
@@ -57,9 +58,10 @@
                             <td>{{ $visita["ID_BITACORA_VISITA"] }}</td>
                             <td>{{ $visita["PERSONA"] }}</td>
                             <td>{{ $visita["VISITANTE"] }}</td>
+                            <td>{{ $visita["VISITANTE_RECURRENTE"] }}</td>
                             <td>{{ $visita["NUM_PERSONA"] }}</td>
                             <td>{{ $visita["NUM_PLACA"] }}</td>
-                            <td>{{ $visita["FECHA_HORA"] ? \Carbon\Carbon::parse($visita["FECHA_HORA"])->setTimezone('America/Tegucigalpa')->format('Y-m-d H:i:s') : '' }}</td>
+                            <td>{{ $visita["FECHA_HORA"] ? \Carbon\Carbon::parse($visita["FECHA_HORA"])->format('Y-m-d H:i:s') : '' }}</td>
                             <td>
                                 <button type="button" class="btn btn-info" data-toggle="modal" data-target="#editarVisitaModal{{ $visita['ID_BITACORA_VISITA'] }}">Editar</button>
                                 <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#eliminarVisitaModal{{ $visita['ID_BITACORA_VISITA'] }}">Eliminar</button>
@@ -67,43 +69,48 @@
                         </tr>
 
                         <!-- Modal de editar visita -->
-                        <div class="modal fade" id="editarVisitaModal{{ $visita['ID_BITACORA_VISITA'] }}" tabindex="-1" role="dialog" aria-labelledby="editarVisitaModalLabel{{ $visita['ID_BITACORA_VISITA'] }}" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="editarVisitaModalLabel{{ $visita['ID_BITACORA_VISITA'] }}">Editar Bitácora de Visita</h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <form class="editar-visita-form" data-id="{{ $visita['ID_BITACORA_VISITA'] }}">
-                                            @csrf
-                                            <div class="form-group">
-                                                <label for="persona_descripcion">Persona:</label>
-                                                <input type="text" class="form-control" id="persona_descripcion" name="persona_descripcion" value="{{ $visita['PERSONA'] }}" required>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="visita_descripcion">Visitante:</label>
-                                                <input type="text" class="form-control" id="visita_descripcion" name="visita_descripcion" value="{{ $visita['VISITANTE'] }}" required>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="num_persona">Número de Persona:</label>
-                                                <input type="text" class="form-control" id="num_persona" name="num_persona" value="{{ $visita['NUM_PERSONA'] }}" required>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="num_placa">Número de Placa:</label>
-                                                <input type="text" class="form-control" id="num_placa" name="num_placa" value="{{ $visita['NUM_PLACA'] }}" required>
-                                            </div>
-                                            <button type="submit" class="btn btn-primary">Guardar</button>
-                                        </form>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                                    </div>
+                       <div class="modal fade" id="editarVisitaModal{{ $visita['ID_BITACORA_VISITA'] }}" tabindex="-1" role="dialog" aria-labelledby="editarVisitaModalLabel{{ $visita['ID_BITACORA_VISITA'] }}" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editarVisitaModalLabel{{ $visita['ID_BITACORA_VISITA'] }}">Editar Bitácora de Visita</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="editar-visita-form" data-id="{{ $visita['ID_BITACORA_VISITA'] }}">
+                    @csrf
+                    <div class="form-group">
+                        <label for="persona_descripcion">Residente:</label>
+                        <input type="text" class="form-control" id="persona_descripcion" name="persona_descripcion" value="{{ $visita['PERSONA'] }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="visita_descripcion">Visitante:</label>
+                        <input type="text" class="form-control" id="visita_descripcion" name="visita_descripcion" value="{{ $visita['VISITANTE'] }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="visita_recurrente_descripcion">Visitante Recurrente:</label>
+                        <input type="text" class="form-control" id="visita_recurrente_descripcion" name="visita_recurrente_descripcion" value="{{ $visita['VISITANTE_RECURRENTE'] }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="num_persona">Número de Persona:</label>
+                        <input type="text" class="form-control" id="num_persona" name="num_persona" value="{{ $visita['NUM_PERSONA'] }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="num_placa">Número de Placa:</label>
+                        <input type="text" class="form-control" id="num_placa" name="num_placa" value="{{ $visita['NUM_PLACA'] }}">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                                </div>
                                 </div>
                             </div>
                         </div>
+
 
                         <!-- Modal de eliminar visita -->
                         <div class="modal fade" id="eliminarVisitaModal{{ $visita['ID_BITACORA_VISITA'] }}" tabindex="-1" role="dialog" aria-labelledby="eliminarVisitaModalLabel{{ $visita['ID_BITACORA_VISITA'] }}" aria-hidden="true">
@@ -155,20 +162,24 @@
                 <form id="nueva-visita-form">
                     @csrf
                     <div class="form-group">
-                        <label for="persona_descripcion">Persona:</label>
+                        <label for="persona_descripcion">Residente:</label>
                         <input type="text" class="form-control" id="persona_descripcion" name="persona_descripcion" required>
                     </div>
                     <div class="form-group">
                         <label for="visita_descripcion">Visitante:</label>
-                        <input type="text" class="form-control" id="visita_descripcion" name="visita_descripcion" required>
+                        <input type="text" class="form-control" id="visita_descripcion" name="visita_descripcion">
                     </div>
+                    <div class="form-group">
+                    <label for="visita_recurrente_descripcion">Visitante Recurrente:</label>
+                    <input type="text" class="form-control" id="visita_recurrente_descripcion" name="visita_recurrente_descripcion">
+                        </div>
                     <div class="form-group">
                         <label for="num_persona">Número de Persona:</label>
                         <input type="text" class="form-control" id="num_persona" name="num_persona" required>
                     </div>
                     <div class="form-group">
                         <label for="num_placa">Número de Placa:</label>
-                        <input type="text" class="form-control" id="num_placa" name="num_placa" required>
+                        <input type="text" class="form-control" id="num_placa" name="num_placa">
                     </div>
                     <button type="submit" class="btn btn-primary">Guardar</button>
                 </form>
@@ -260,10 +271,17 @@
         });
 
         // Captura y manejo de búsqueda en DataTables
-        table.on('search.dt', function() {
-            var searchValue = table.search();
-            $('#searchInput').val(searchValue); // Asigna el valor al campo oculto del formulario
-        });
+    table.on('search.dt', function() {
+    var searchValue = table.search();  // Captura el valor de búsqueda actual
+    console.log("Valor de búsqueda capturado: " + searchValue);  // Verifica el valor
+    $('#searchInput').val(searchValue);  // Asigna el valor al campo oculto del formulario
+});
+
+// Verifica el valor antes de enviar el formulario
+$('#reporteForm').on('submit', function(e) {
+    var searchValue = $('#searchInput').val();
+    console.log("Valor enviado para el reporte: " + searchValue);  // Verifica el valor antes de enviar el formulario
+});
 
 // Validar más de 3 letras repetidas y doble espacio en el campo de descripción
 function validarInput(input) {
