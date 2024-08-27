@@ -70,6 +70,7 @@ html>
                 <th>#</th> <!-- Cambiado el encabezado a "#" -->
                <th>PERSONA</th>
                         <th>VISITANTE</th>
+                        <th>VISITANTE RECURRENTE</th>
                         <th>NUMERO DE PERSONAS</th>
                         <th>NUMERO DE PLACA</th>
                         <th>FECHA Y HORA</th>
@@ -81,9 +82,10 @@ html>
                 <td>{{ $index + 1 }}</td> <!-- Mostrar el índice del bucle como número de orden -->
                 <td>{{ $visita["PERSONA"] }}</td>
                             <td>{{ $visita["VISITANTE"] }}</td>
+                            <td>{{ $visita["VISITANTE_RECURRENTE"] }}</td>
                             <td>{{ $visita["NUM_PERSONA"] }}</td>
                             <td>{{ $visita["NUM_PLACA"] }}</td>
-                            <td>{{ $visita["FECHA_HORA"] ? \Carbon\Carbon::parse($visita["FECHA_HORA"])->setTimezone('America/Tegucigalpa')->format('Y-m-d H:i:s') : '' }}</td>
+                            <td>{{ $visita["FECHA_HORA"] ? \Carbon\Carbon::parse($visita["FECHA_HORA"])->format('Y-m-d H:i:s') : '' }}</td>
             </tr>
             @endforeach
         </tbody>
