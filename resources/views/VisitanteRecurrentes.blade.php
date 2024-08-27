@@ -14,7 +14,7 @@
                 <div class="d-flex justify-content-end">
                     <button class="btn btn-primary mr-2" data-toggle="modal" data-target="#nuevoVisitanteRecurrenteModal">Nuevo</button>
                     <form id="reporteForm" method="GET" action="{{ route('visitante-recurrente.reporte') }}" target="_blank">
-                    <input type="hidden" name="persona_descripcion" id="searchInput">
+                    <input type="hidden" name="nombre" id="searchInput">
                     <button type="submit" class="btn btn-success mt-2">Generar Reporte</button>
                 </form>
                 </div>
@@ -31,7 +31,7 @@
         <thead class="bg-primary text-white">
             <tr>
                 <th>ID</th>
-                <th>PERSONA</th>
+                <th>RESIDENTE</th>
                 <th>NOMBRE VISITANTE</th>
                 <th>DNI VISITANTE</th>
                 <th>NÚMERO DE PERSONAS</th>
@@ -91,10 +91,11 @@
                                         <label for="num_placa">Número de Placa:</label>
                                         <input type="text" class="form-control" id="num_placa" name="num_placa" value="{{ $recurrente['NUM_PLACA'] }}" >
                                     </div>
-                                    <div class="form-group">
-                                        <label for="fecha_vencimiento">Fecha de Vencimiento:</label>
-                                        <input type="date" class="form-control" id="fecha_vencimiento" name="fecha_vencimiento" value="{{ $recurrente['FECHA_VENCIMIENTO'] }}" required>
-                                    </div>
+                                      <div class="form-group">
+                            <label for="hora_fecha">Fecha de Vencimiento</label>
+                    <input type="text" class="form-control" id="fecha_vencimiento" name="fecha_vencimiento"
+                    value="{{ \Carbon\Carbon::parse($recurrente['FECHA_VENCIMIENTO'])->format('Y-m-d H:i:s') }}"placeholder="Ejemplo de formato 2024-08-26 11:23:20" required>
+                                </div>
                                     <button type="submit" class="btn btn-primary">Guardar</button>
                                 </form>
                             </div>
@@ -173,10 +174,12 @@
                         <label for="num_placa">Número de Placa (Opcional):</label>
                         <input type="text" class="form-control" id="num_placa" name="num_placa" >
                     </div>
+                    
                     <div class="form-group">
-                        <label for="fecha_vencimiento">Fecha de Vencimiento:</label>
-                        <input type="date" class="form-control" id="fecha_vencimiento" name="fecha_vencimiento" required>
+                        <label for="fecha_vencimiento">Fecha de Vencimiento</label>
+                        <input type="text" class="form-control" id="fecha_vencimiento" name="fecha_vencimiento" placeholder="Ejemplo de formato 2024-08-26 11:23:20" required>
                     </div>
+                    
                     <button type="submit" class="btn btn-primary">Guardar</button>
                 </form>
             </div>
