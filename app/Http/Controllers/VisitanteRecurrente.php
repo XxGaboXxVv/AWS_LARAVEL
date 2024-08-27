@@ -61,7 +61,7 @@ class VisitanteRecurrente extends Controller
         'dni_visitante' => 'required|string|max:50',
         'num_personas' => 'required|integer',
         'num_placa' => 'nullable|string|max:30',
-        'fecha_vencimiento' => 'required|date',
+        'fecha_vencimiento' => 'required|date', // Validación para el formato exacto de fecha y hora
     ]);
 
     try {
@@ -82,7 +82,7 @@ class VisitanteRecurrente extends Controller
         $date->setTimezone(new DateTimeZone('America/Tegucigalpa'));
 
         // Crear nuevo registro de visitante recurrente
-        $idVisitante = DB::table('TBL_VISITANTES_RECURRENTES')->insertGetId([
+        $idVisitanteRecurrente = DB::table('TBL_VISITANTES_RECURRENTES')->insertGetId([
             'ID_PERSONA' => $persona->ID_PERSONA,
             'NOMBRE_VISITANTE' => $data['nombre_visitante'],
             'DNI_VISITANTE' => $data['dni_visitante'],
@@ -92,21 +92,20 @@ class VisitanteRecurrente extends Controller
             'FECHA_VENCIMIENTO' => $data['fecha_vencimiento'],
         ]);
 
-        \Log::info('Nuevo visitante recurrente creado con ID:', [$idVisitante]);
+        \Log::info('Nuevo visitante recurrente creado con ID:', [$idVisitanteRecurrente]);
 
         // Crear nuevo registro de bitácora de visita
         DB::table('TBL_BITACORA_VISITA')->insert([
             'ID_PERSONA' => $persona->ID_PERSONA,
-            'ID_VISITANTE' => $idVisitante,
+            'ID_VISITANTES_RECURRENTES' => $idVisitanteRecurrente, // Cambiar aquí para usar ID_VISITANTE_RECURRENTE
             'NUM_PERSONA' => $data['num_personas'],
             'NUM_PLACA' => $data['num_placa'],
             'FECHA_HORA' => $date->format('Y-m-d H:i:s'),
             'FECHA_VENCIMIENTO' => $data['fecha_vencimiento'],
         ]);
 
-        \Log::info('Registro de bitácora de visita creado para ID_VISITANTE:', [$idVisitante]);
+        \Log::info('Registro de bitácora de visita creado para ID_VISITANTE_RECURRENTE:', [$idVisitanteRecurrente]);
 
-        // Registrar la actividad en los logs
         $this->logActivity('visitante recurrente', 'post', $data);
 
         // Confirmar la transacción
@@ -114,9 +113,7 @@ class VisitanteRecurrente extends Controller
 
         return response()->json(['success' => 'Visitante recurrente creado con éxito.']);
     } catch (\Exception $e) {
-        // Revertir la transacción en caso de error
         DB::rollBack();
-
         \Log::error('Error al crear visitante recurrente:', [$e->getMessage()]);
         return response()->json(['error' => 'Se produjo un error: ' . $e->getMessage()], 500);
     }
@@ -125,25 +122,26 @@ class VisitanteRecurrente extends Controller
 
 
 
-    public function actualizar(Request $request, $id)
+
+public function actualizar(Request $request, $id)
 {
     try {
         $this->authorize('update', User::class);
     } catch (AuthorizationException $e) {
-        return response()->json(['error'=> 'No tienes permisos para poder Actualizar.']);
+        return response()->json(['error' => 'No tienes permisos para poder Actualizar.']);
     }
 
-    // Validar los datos proporcionados por el usuario
+    // Validar los nuevos datos
     $data = $request->validate([
         'persona_descripcion' => 'required|string|max:255',
-        'nombre_visitante' => 'required|string|max:60',
+        'nombre_visitante' => 'required|string|max:100',
         'dni_visitante' => 'required|string|max:50',
         'num_personas' => 'required|integer',
-        'num_placa' => 'nullable|string|max:30',
-        'fecha_vencimiento' => 'required|date',
+        'num_placa' => 'nullable|string|max:15',
+        'fecha_vencimiento' => 'required|date', // Validación para el formato exacto de fecha y hora
     ]);
 
-    // Verificar si la persona existe en la base de datos
+    // Verificar si la persona existe
     $persona = DB::table('TBL_PERSONAS')
         ->where('NOMBRE_PERSONA', $data['persona_descripcion'])
         ->first();
@@ -152,29 +150,27 @@ class VisitanteRecurrente extends Controller
         return response()->json(['error' => 'La persona no existe.'], 400);
     }
 
-    // Obtener los datos actuales del visitante recurrente desde el API
+    // Obtener los datos actuales del visitante recurrente
     $baseUrl = Config::get('api.base_url');
-    $response = Http::get($baseUrl.'/SEL_VISITANTES_RECURRENTES');
+    $response = Http::get($baseUrl . '/SEL_VISITANTES_RECURRENTES');
     if (!$response->successful()) {
         return response()->json(['error' => 'Error al obtener los datos del visitante recurrente.'], 500);
     }
-
-    // Buscar el visitante recurrente específico por ID
-    $visitantes = $response->json();
-    $visitanteActual = collect($visitantes)->firstWhere('ID_VISITANTES_RECURRENTES', $id);
+    $visitantesRecurrentes = $response->json();
+    $visitanteActual = collect($visitantesRecurrentes)->firstWhere('ID_VISITANTES_RECURRENTES', $id);
     if (is_null($visitanteActual)) {
         return response()->json(['error' => 'No se encontraron datos para el visitante recurrente.'], 404);
     }
 
     // Actualizar los datos del visitante recurrente utilizando el API
-    $updateResponse = Http::post($baseUrl.'/PUT_VISITANTES_RECURRENTES', [
+    $updateResponse = Http::post($baseUrl . '/PUT_VISITANTES_RECURRENTES', [
         'P_ID_VISITANTES_RECURRENTES' => $id,
         'P_ID_PERSONA' => $persona->ID_PERSONA,
         'P_NOMBRE_VISITANTE' => $data['nombre_visitante'],
         'P_DNI_VISITANTE' => $data['dni_visitante'],
         'P_NUM_PERSONAS' => $data['num_personas'],
         'P_NUM_PLACA' => $data['num_placa'],
-        'P_FECHA_HORA' => now()->format('Y-m-d H:i:s'),  // Actualización con la fecha y hora actual
+        'P_FECHA_HORA' => now()->format('Y-m-d H:i:s'),
         'P_FECHA_VENCIMIENTO' => $data['fecha_vencimiento'],
     ]);
 
@@ -182,18 +178,23 @@ class VisitanteRecurrente extends Controller
         return response()->json(['error' => 'Error al actualizar el visitante recurrente.'], 500);
     }
 
-    // Actualizar los datos en la bitácora de visita
-    DB::table('TBL_BITACORA_VISITA')
-        ->where('ID_VISITANTE', $id)
+    // Actualizar el registro en la bitácora de visita usando ID_VISITANTES_RECURRENTES
+    $updatedRows = DB::table('TBL_BITACORA_VISITA')
+        ->where('ID_VISITANTES_RECURRENTES', $id)
         ->update([
             'ID_PERSONA' => $persona->ID_PERSONA,
             'NUM_PERSONA' => $data['num_personas'],
             'NUM_PLACA' => $data['num_placa'],
             'FECHA_HORA' => now()->format('Y-m-d H:i:s'),
-            'FECHA_VENCIMIENTO' => $data['fecha_vencimiento'],
+            'FECHA_VENCIMIENTO' => $data['fecha_vencimiento'], // Mantén este valor del request.
         ]);
 
-    // Registrar la actividad en los logs comparando los datos antiguos y los nuevos
+    // Verificar si se actualizó algún registro
+    if ($updatedRows === 0) {
+        return response()->json(['error' => 'No se encontró ningún registro de bitácora para actualizar.'], 404);
+    }
+
+    // Registrar la actividad en los logs
     $oldData = [
         'P_ID_PERSONA' => $visitanteActual['ID_PERSONA'],
         'P_NOMBRE_VISITANTE' => $visitanteActual['NOMBRE_VISITANTE'],
@@ -211,11 +212,11 @@ class VisitanteRecurrente extends Controller
         'P_NUM_PERSONAS' => $data['num_personas'],
         'P_NUM_PLACA' => $data['num_placa'],
         'P_FECHA_HORA' => now()->format('Y-m-d H:i:s'),
-        'P_FECHA_VENCIMIENTO' => $data['fecha_vencimiento'],
+        'P_FECHA_VENCIMIENTO' => $data['fecha_vencimiento'], // Este valor debería pasar correctamente
     ];
 
     $this->logActivity(
-        'visitante recurrente ' . $visitanteActual['ID_VISITANTES_RECURRENTES'],
+        'visitante recurrente ' . $id,
         'put',
         $newData,
         $oldData
@@ -223,8 +224,6 @@ class VisitanteRecurrente extends Controller
 
     return response()->json(['success' => 'Visitante recurrente actualizado correctamente.']);
 }
-
-
 
 
 
@@ -267,7 +266,8 @@ class VisitanteRecurrente extends Controller
 }
     public function generarReporte(Request $request)
 {
-    $query = strtoupper($request->input('persona_descripcion'));
+    
+    $query = strtoupper($request->input('nombre'));
     $baseUrl = Config::get('api.base_url');
     $response = Http::get($baseUrl.'/SEL_VISITANTES_RECURRENTES');
     
@@ -286,9 +286,12 @@ class VisitanteRecurrente extends Controller
          // Filtrar los visitantes recurrentes si se ha proporcionado un nombre de residente
          if ($query) {
             $Recurrentes = array_filter($Recurrentes, function($recurrente) use ($query) {
-                return stripos($recurrente['PERSONA'], $query) !== false;
-            });
-        }
+                $matchResidente = stripos($recurrente['PERSONA'], $query) !== false;
+            $matchFecha = stripos(\Carbon\Carbon::parse($recurrente['FECHA_HORA'])->format('Y-m-d H:i:s'), $query) !== false;
+            
+            return $matchResidente || $matchFecha;
+        });
+         }
 
         // Generar el PDF
         $pdf = Pdf::loadView('reportes.visitantesRecurrentes', compact('Recurrentes', 'personas'));
