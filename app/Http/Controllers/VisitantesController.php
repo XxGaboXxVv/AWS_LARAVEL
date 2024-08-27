@@ -51,7 +51,7 @@ class VisitantesController extends Controller
         return DB::table('TBL_PERSONAS')->select('ID_PERSONA', 'NOMBRE_PERSONA')->get();
     }
 
-    public function crear(Request $request)
+   public function crear(Request $request)
 {
     try {
         $this->authorize('insert', User::class);
@@ -93,13 +93,12 @@ class VisitantesController extends Controller
         // Crear nuevo registro de bitácora de visita
         DB::table('TBL_BITACORA_VISITA')->insert([
             'ID_PERSONA' => $persona->ID_PERSONA,
-            'ID_VISITANTE' => $idVisitante,
+            'ID_VISITANTE' => $idVisitante, // Cambiar aquí para usar ID_VISITANTE
             'NUM_PERSONA' => $data['num_personas'],
             'NUM_PLACA' => $data['num_placa'],
             'FECHA_HORA' => $date->format('Y-m-d H:i:s'),
         ]);
 
-        // Registrar la actividad en los logs (opcional)
         $this->logActivity('visita', 'post', $data);
 
         return response()->json(['success' => 'Visitante creado con éxito.']);
@@ -107,6 +106,7 @@ class VisitantesController extends Controller
         return response()->json(['error' => 'Se produjo un error: ' . $e->getMessage()], 500);
     }
 }
+
 
 
    public function actualizar(Request $request, $id)
@@ -163,7 +163,8 @@ class VisitantesController extends Controller
     }
 
     // Actualizar el registro en la bitácora de visita
-    DB::table('TBL_BITACORA_VISITA')->where('ID_VISITANTE', $id)->update([
+    DB::table('TBL_BITACORA_VISITA')->where('ID_VISITANTE', $id)->whereNull('FECHA_VENCIMIENTO') // Asegurar que solo se actualicen los registros correspondientes
+        ->update([
         'ID_PERSONA' => $persona->ID_PERSONA,
         'NUM_PERSONA' => $data['num_personas'],
         'NUM_PLACA' => $data['num_placa'],
@@ -238,7 +239,7 @@ class VisitantesController extends Controller
 
     public function generarReporte(Request $request)
     {
-        $query = strtoupper($request->input('persona_descripcion'));
+        $query = strtoupper($request->input('nombre'));
         $baseUrl = Config::get('api.base_url'); // Obtiene la URL base de la API desde la configuración
         $response = Http::get($baseUrl.'/SEL_REGVISITAS');
         if ($response->successful()) {
@@ -253,11 +254,14 @@ class VisitantesController extends Controller
             }
 
             // Filtrar los visitantes si se ha proporcionado un nombre de PERSONA
-            if ($query) {
-                $visitantes = array_filter($visitantes, function ($regvisita) use ($query) {
-                    return stripos($regvisita['PERSONA'], $query) !== false;
-                });
-            }
+             if ($query) {
+            $visitantes = array_filter($visitantes, function($regvisita) use ($query) {
+                $matchResidente = stripos($regvisita['PERSONA'], $query) !== false;
+            $matchFecha = stripos(\Carbon\Carbon::parse($regvisita['FECHA_HORA'])->format('Y-m-d H:i:s'), $query) !== false;
+            
+            return $matchResidente || $matchFecha;
+        });
+         }
 
             // Generar el PDF
             $pdf = Pdf::loadView('reportes.Visitantes', ['visitantes' => $visitantes]);
