@@ -42,7 +42,7 @@
             <thead class="bg-primary text-white">
                 <tr>
                     <th>ID RESERVA</th>
-                    <th>PERSONA</th>
+                    <th>RESIDENTE</th>
                     <th>INSTALACIÓN</th>
                     <th>ESTADO RESERVA</th>
                     <th>TIPO EVENTO</th>
@@ -58,7 +58,7 @@
                         <td>{{ $reserva["INSTALACION"] }}</td>
                         <td>{{ $reserva["ESTADO_RESERVA"] }}</td>
                         <td>{{ $reserva["TIPO_EVENTO"] }}</td>
-                        <td>{{ $reserva["HORA_FECHA"] ? \Carbon\Carbon::parse($reserva["HORA_FECHA"])->setTimezone('America/Tegucigalpa')->format('Y-m-d H:i:s') : '' }}</td>
+                        <td>{{ $reserva["HORA_FECHA"] ? \Carbon\Carbon::parse($reserva["HORA_FECHA"])->format('Y-m-d H:i:s') : '' }}</td>
                         <td>
                             <button type="button" class="btn btn-info" data-toggle="modal" data-target="#editarReservacion{{ $reserva['ID_RESERVA'] }}">Editar</button>
                             <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#eliminarReservacion{{ $reserva['ID_RESERVA'] }}">Eliminar</button>
@@ -107,6 +107,10 @@
                     <div class="form-group">
                         <label for="tipo_evento">Tipo de Evento:</label>
                         <input type="text" class="form-control" id="tipo_evento" name="tipo_evento" value="{{ $reserva['TIPO_EVENTO'] }}" required>
+                    </div>
+                    <div class="form-group">
+                <label for="hora_fecha">Fecha y Hora de la Reserva</label>
+                <input type="text" class="form-control" id="hora_fecha" name="hora_fecha" value="{{ \Carbon\Carbon::parse($reserva['HORA_FECHA'])->format('Y-m-d H:i:s') }}"                        placeholder="Ejemplo de formato 2024-08-26 11:23:20" required>
                     </div>
                     <button type="submit" class="btn btn-primary">Guardar Cambios</button>
                 </form>
@@ -188,13 +192,18 @@
                         <label for="tipo_evento">Tipo de Evento:</label>
                         <input type="text" class="form-control" id="tipo_evento" name="tipo_evento" required>
                     </div>
-                    
+                    <div class="form-group">
+                        <label for="hora_fecha">Fecha y Hora de la Reservacion</label>
+                        <input type="text" class="form-control" id="hora_fecha" name="hora_fecha" placeholder="Ejemplo de formato 2024-08-26 11:23:20" required>
+                    </div>
                     <button type="submit" class="btn btn-primary">Agregar Reservación</button>
                 </form>
             </div>
         </div>
     </div>
 </div>
+
+
 @stop
 
 @section('css')
