@@ -20,7 +20,7 @@
                         @foreach($anunciosEventos as $evento)
                             <div class="timeline-item">
                                 <span class="time">
-                                <i class="fas fa-clock"></i>  {{ $evento['FECHA_HORA'] ? \Carbon\Carbon::parse($evento["FECHA_HORA"])->format('Y-m-d h:i:s') : '' }}
+                                <i class="fas fa-clock"></i>  {{ $evento['FECHA_HORA'] ? \Carbon\Carbon::parse($evento["FECHA_HORA"])->setTimezone('America/Guatemala')->format('Y-m-d H:i') : '' }}
                                 </span>
 
                                 <h3 class="timeline-header">
