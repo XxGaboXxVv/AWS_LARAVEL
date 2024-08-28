@@ -42,7 +42,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach($Recurrentes as $recurrente)
+            @foreach($visitantesRecurrentesData as $recurrente)
                 <tr>
                     <td>{{ $recurrente['ID_VISITANTES_RECURRENTES'] }}</td>
                     <td>{{ $recurrente['PERSONA'] }}</td>
@@ -227,7 +227,36 @@
 <script>
     $(document).ready(function() {
         var table = $('#visitantes-recurrentes-table').DataTable({
-            "language": {
+            "processing": true,
+            "serverSide": true,
+            "ajax": {
+            "url": "{{ route('Visitantes_Recurrentes.fetch') }}",
+            "type": "GET"
+        },
+        "columns": [
+            { "data": "ID_VISITANTES_RECURRENTES" },
+            { "data": "PERSONA" },
+            { "data": "NOMBRE_VISITANTE" },
+            { "data": "DNI_VISITANTE" },
+            { "data": "NUM_PERSONAS" },
+            { "data": "NUM_PLACA" },
+            { "data": "FECHA_HORA" },                    
+            { "data": "FECHA_VENCIMIENTO" },
+            {
+                "data": null,
+                "orderable": false,
+                "searchable": false,
+                
+         "render": function(data, type, row) {
+                    return `
+                        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#editarVisitanteRecurrenteModal${row.ID_VISITANTES_RECURRENTES}">Editar</button>
+                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#eliminarVisitanteRecurrenteModal${row.ID_VISITANTES_RECURRENTES}">Eliminar</button>
+
+                    
+                    `;
+                }
+            }
+        ],"language": {
                 "lengthMenu": "Mostrar _MENU_ registros por página",
                 "zeroRecords": "No se encontraron resultados",
                 "info": "Mostrando página _PAGE_ de _PAGES_",
