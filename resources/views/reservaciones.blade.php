@@ -341,20 +341,22 @@
         });
 
         // Función para restringir caracteres especiales
-        function restringirCaracteres() {
-            var fieldsToRestrict = ['persona_descripcion', 'tipo_evento'];
-            fieldsToRestrict.forEach(function(fieldId) {
-                var inputs = document.querySelectorAll('input[id^="' + fieldId + '"]');
-                inputs.forEach(function(input) {
-                    input.addEventListener('input', function(e) {
-                        const validChars = /^[a-zA-Z\s]*$/;
-                        if (!validChars.test(input.value)) {
-                            input.value = input.value.replace(/[^a-zA-Z\s]/g, '');
-                        }
-                    });
-                });
+       function restringirCaracteres() {
+    var fieldsToRestrict = ['persona_descripcion', 'tipo_evento'];
+    fieldsToRestrict.forEach(function(fieldId) {
+        var inputs = document.querySelectorAll('input[id^="' + fieldId + '"]');
+        inputs.forEach(function(input) {
+            input.addEventListener('input', function(e) {
+                // Regex to allow letters (including accented ones), ñ and spaces
+                const validChars = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]*$/;
+                if (!validChars.test(input.value)) {
+                    input.value = input.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '');
+                }
             });
-        }
+        });
+    });
+}
+
 
         // Función para limitar el tamaño de los caracteres en ciertos campos
         function limitarTamañoCaracteres() {
