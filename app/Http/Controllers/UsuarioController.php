@@ -106,7 +106,7 @@ class UsuarioController extends Controller
     
         $data = $request->validate([
             'id_rol' => 'required|integer',
-            'nombre_usuario' => 'required|string|max:70|regex:/^[A-Z\s]+$/',
+            'nombre_usuario' => 'required|string|max:70|',
             'email' => 'required|string|max:70|email|unique:TBL_MS_USUARIO|regex:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/',
         ], [
             'email.unique' => 'El correo electrónico ya ha sido registrado.',
@@ -391,10 +391,9 @@ class UsuarioController extends Controller
     
         $data = $request->validate([
             'id_rol' => 'required|integer',
-            'nombre_usuario' => 'required|string|max:70|regex:/^[A-Z\s]+$/u',
+            'nombre_usuario' => 'required|string|max:70|',
             'email' => 'required|string|max:70|email',
         ], [
-            'nombre_usuario.regex' => 'El nombre de usuario solo puede contener letras mayúsculas y espacios.',
             'email.email' => 'El correo electrónico debe ser una dirección de correo válida.',
 
         ]);
