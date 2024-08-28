@@ -430,20 +430,22 @@ function convertirAMayusculas() {
     
  // Función para restringir caracteres especiales
  function restringirCaracteres() {
-        // Especificar los campos que deben ser restringidos
-        var fieldsToRestrict = ['nombre', 'parentesco', 'condominio','P_NOMBRE_PERSONA'];
-        fieldsToRestrict.forEach(function(fieldId) {
-            var inputs = document.querySelectorAll('input[id^="' + fieldId + '"]');
-            inputs.forEach(function(input) {
-                input.addEventListener('input', function(e) {
-                    const validChars = /^[a-zA-Z\s]*$/;
-                    if (!validChars.test(input.value)) {
-                        input.value = input.value.replace(/[^a-zA-Z\s]/g, '');
-                    }
-                });
+    // Especificar los campos que deben ser restringidos
+    var fieldsToRestrict = ['nombre', 'parentesco', 'condominio', 'P_NOMBRE_PERSONA'];
+    fieldsToRestrict.forEach(function(fieldId) {
+        var inputs = document.querySelectorAll('input[id^="' + fieldId + '"]');
+        inputs.forEach(function(input) {
+            input.addEventListener('input', function(e) {
+                // Regex to allow letters (including accented ones), ñ and spaces
+                const validChars = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]*$/;
+                if (!validChars.test(input.value)) {
+                    input.value = input.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '');
+                }
             });
         });
-    }
+    });
+}
+
 
     // Función para restringir ciertos caracteres en campos de contacto y DNI
     function restringirCaracteresContactoDNI() {
