@@ -57,15 +57,21 @@ class BitacoraUsuario extends Controller
     
         // Reemplazar IDs con nombres
         foreach ($bitacoraUsuario as &$bitacora) {
-            $bitacora['ID_USUARIO'] = $usuarios[$bitacora['ID_USUARIO']] ?? $bitacora['ID_USUARIO'];
-            $bitacora['ID_OBJETO'] = $objetos[$bitacora['ID_OBJETO']] ?? $bitacora['ID_OBJETO'];
+            $bitacora['ID_USUARIO'] =  $usuarios->firstWhere('ID_USUARIO', $bitacora['ID_USUARIO'])->NOMBRE_USUARIO ?? $bitacora['ID_USUARIO'];
+            $bitacora['ID_OBJETO'] =  $objetos->firstWhere('ID_OBJETO', $bitacora['ID_OBJETO'])->OBJETO ?? $bitacora['ID_OBJETO'];
+
+        // Formatear la fecha y hora
+        $bitacora['FECHA'] = $bitacora['FECHA'] ? \Carbon\Carbon::parse($bitacora['FECHA'])->format('Y-m-d') : '';
         }
     
         if ($search) {
             $bitacoraUsuario = array_filter($bitacoraUsuario, function ($bitacora) use ($search) {
                 return strpos($bitacora['ID_USUARIO'], $search) !== false ||
-                       strpos($bitacora['ACCION'], $search) !== false ||
-                       strpos($bitacora['DESCRIPCION'], $search) !== false;
+                strpos($bitacora['ID_OBJETO'], $search) !== false ||
+                strpos($bitacora['ID_OBJETO'], $search) !== false ||
+                strpos($bitacora['FECHA'], $search) !== false ||
+                strpos($bitacora['ACCION'], $search) !== false ||
+                strpos($bitacora['DESCRIPCION'], $search) !== false;
             });
         }
     
@@ -84,13 +90,13 @@ class BitacoraUsuario extends Controller
     {
         // Suponiendo que puedes obtener los usuarios desde la base de datos o una API
         // Aquí un ejemplo usando la base de datos de Laravel:
-        return User::pluck('NOMBRE_USUARIO', 'ID_USUARIO')->toArray();
+        return DB::table('TBL_MS_USUARIO')->select('NOMBRE_USUARIO', 'ID_USUARIO')->get();
     }
     
     private function obtenerObjetos()
     {
         // Suponiendo que puedes obtener los objetos desde la base de datos o una API
-        return DB::table('TBL_OBJETOS')->pluck('OBJETO', 'ID_OBJETO')->toArray();
+        return DB::table('TBL_OBJETOS')->select('OBJETO', 'ID_OBJETO')->get();
     }
     
 
@@ -207,8 +213,9 @@ public function generarReporte(Request $request)
 
         // Reemplazar IDs con nombres en el array de bitácoras
         foreach ($bitacoraUsuario as &$bitacora) {
-            $bitacora['ID_USUARIO'] = $usuarios[$bitacora['ID_USUARIO']] ?? $bitacora['ID_USUARIO'];
-            $bitacora['ID_OBJETO'] = $objetos[$bitacora['ID_OBJETO']] ?? $bitacora['ID_OBJETO'];
+            $bitacora['ID_USUARIO'] =  $usuarios->firstWhere('ID_USUARIO', $bitacora['ID_USUARIO'])->NOMBRE_USUARIO ?? $bitacora['ID_USUARIO'];
+            $bitacora['ID_OBJETO'] =  $objetos->firstWhere('ID_OBJETO', $bitacora['ID_OBJETO'])->OBJETO ?? $bitacora['ID_OBJETO'];
+
         }
 
         $perPage = 50; // Ajusta este valor según tus necesidades
@@ -217,7 +224,10 @@ public function generarReporte(Request $request)
         if ($response->successful()) {
             if ($id_usuario) {
                 $bitacoraUsuario = array_filter($bitacoraUsuario, function($bitacora) use ($id_usuario) {
-                    return stripos($bitacora['ID_USUARIO'], $id_usuario) !== false;
+            $matchUsuario = stripos($bitacora['ID_USUARIO'], $id_usuario) !== false;
+            $matchObjeto= stripos($bitacora['ID_USUARIO'], $id_usuario) !== false;
+            
+            return $matchUsuario || $matchObjeto;
                 });
             }
         $html = view('reportes.BitacoraUsuario', [
