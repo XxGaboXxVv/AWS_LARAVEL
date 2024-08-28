@@ -114,7 +114,7 @@
                     </div>
                     <div class="form-group">
                         <label for="NOMBRE_USUARIO">Nombre de Usuario:</label>
-                        <input type="text" class="form-control" id="NOMBRE_USUARIO" name="nombre_usuario" value="{{ $usuario['NOMBRE_USUARIO'] }}" oninput="this.value = this.value.toUpperCase()" maxlength="70" pattern="[A-Z\s]+" title="Solo se permiten letras mayúsculas y espacios" required>
+                        <input type="text" class="form-control" id="NOMBRE_USUARIO" name="nombre_usuario" value="{{ $usuario['NOMBRE_USUARIO'] }}" oninput="this.value = this.value.toUpperCase()" maxlength="70"  required>
                     </div>
                     <script>
                 // Este script convierte el texto del campo de entrada en mayúsculas automáticamente
@@ -202,7 +202,7 @@
                     </div>
                     <div class="form-group">
                         <label for="NOMBRE_USUARIO">Nombre de Usuario:</label>
-                        <input type="text" class="form-control" id="NOMBRE_USUARIO" name="nombre_usuario" oninput="this.value = this.value.toUpperCase()" maxlength="70" pattern="[A-Z\s]+" title="Solo se permiten letras mayúsculas y espacios" required>
+                        <input type="text" class="form-control" id="NOMBRE_USUARIO" name="nombre_usuario" oninput="this.value = this.value.toUpperCase()" maxlength="70" required>
                     </div>
                     <script>
                     // Este script convierte el texto del campo de entrada en mayúsculas automáticamente
