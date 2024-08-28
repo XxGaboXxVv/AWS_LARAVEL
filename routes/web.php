@@ -139,6 +139,7 @@ Route::get('/reporte-residentes', [ResidentesController::class, 'generarReporte'
 /* RUTAS PARA VISITANTES */
 Route::middleware([App\Http\Middleware\LogPageChanges::class])->group(function () {
     Route::get('/Visitantes', [VisitantesController::class, 'Visitante'])->name('Visitantes')->middleware('auth');
+    Route::get('/Visitantes-fetch', [VisitantesController::class, 'fetchVisitantes'])->name('Visitantes.fetch')->middleware('auth');
     Route::post('/visitantes/guardar', [VisitantesController::class, 'crear'])->name('visitantes.guardar')->middleware('auth');
     Route::post('/visitantes/actualizar/{id}', [VisitantesController::class, 'actualizar'])->name('visitantes.actualizar')->middleware('auth');
     Route::post('/visitantes/eliminar/{id}', [VisitantesController::class, 'eliminar'])->name('visitantes.eliminar')->middleware('auth');
@@ -149,6 +150,7 @@ Route::middleware([App\Http\Middleware\LogPageChanges::class])->group(function (
 /*RUTAS PARA VISITANTES RECURRENTES*/ 
 Route::middleware([App\Http\Middleware\LogPageChanges::class])->group(function () {
     Route::get('/VisitanteRecurrente', [VisitanteRecurrente::class, 'getRecurrente'])->name('VisitanteRecurrente')->middleware('auth');
+    Route::get('/Visitantes_Recurrentes-fetch', [VisitanteRecurrente::class, 'fetchVisitantesRecurrentes'])->name('Visitantes_Recurrentes.fetch')->middleware('auth');
     Route::post('/visitante-recurrente/crear', [VisitanteRecurrente::class, 'crear'])->name('visitante-recurrente.crear');
     Route::post('/visitante-recurrente/actualizar/{id}', [VisitanteRecurrente::class, 'actualizar'])->name('visitante-recurrente.actualizar');
     Route::post('/visitante-recurrente/eliminar/{id}', [VisitanteRecurrente::class, 'eliminar'])->name('visitante-recurrente.eliminar');
@@ -160,6 +162,7 @@ Route::middleware([App\Http\Middleware\LogPageChanges::class])->group(function (
 /* Reservaciones */
 Route::middleware([App\Http\Middleware\LogPageChanges::class])->group(function () {
     Route::get('/reservaciones', [ReservacionesController::class, 'reserva'])->name('reservaciones')->middleware('auth');
+    Route::get('/Reservaciones-fetch', [ReservacionesController::class, 'fetchReservaciones'])->name('Reservaciones.fetch')->middleware('auth');
     Route::post('/reservaciones/guardar', [ReservacionesController::class, 'crear'])->name('reservaciones.guardar');
     Route::post('/reservaciones/actualizar/{id}', [ReservacionesController::class, 'actualizar'])->name('reservaciones.actualizar');
     Route::post('/reservaciones/eliminar/{id}', [ReservacionesController::class, 'eliminar'])->name('reservaciones.eliminar');
@@ -195,6 +198,7 @@ Route::get('/Perfil', [PerfilController::class, 'completeRegistration'])->name('
 /*Bitacora visita*/
 Route::middleware([App\Http\Middleware\LogPageChanges::class])->group(function () {
     Route::get('/BitacoraVisita', [BitacoraVisita::class, 'bitacora'])->name('BitacoraVisita')->middleware('auth');
+    route::get('/fetch-bitacora-visita', [BitacoraVisita::class, 'fetchBitacoraVisita'])->name('fetch.bitacora.visita');
     Route::post('/bitacora/guardar', [BitacoraVisita::class, 'crear'])->name('bitacora.guardar')->middleware(middleware:'auth');;
     Route::post('/bitacora/actualizar/{id}', [BitacoraVisita::class, 'actualizar'])->name('bitacora.actualizar')->middleware(middleware:'auth');;
     Route::post('/bitacora/eliminar/{id}', [BitacoraVisita::class, 'eliminar'])->name('bitacora.eliminar')->middleware(middleware:'auth');;
@@ -264,6 +268,7 @@ Route::middleware([App\Http\Middleware\LogPageChanges::class])->group(function (
 /*Condominios*/
 Route::middleware([App\Http\Middleware\LogPageChanges::class])->group(function () {
     Route::get('/Condominios', [Condominios::class, 'getCondominios'])->name('Condominios')->middleware(middleware:'auth');;
+    Route::get('/Condominios-fetch', [Condominios::class, 'fetchCondominios'])->name('Condominios.fetch')->middleware('auth');
     Route::post('/Condominios/guardar', [Condominios::class, 'crear'])->name('condominios.store');
     Route::post('/Condominios/actualizar/{id}', [Condominios::class, 'actualizar'])->name('condominios.actualizar');
     Route::post('/Condominios/eliminar/{id}', [Condominios::class, 'eliminar'])->name('condominios.eliminar');
@@ -344,50 +349,3 @@ Route::middleware([App\Http\Middleware\LogPageChanges::class])->group(function (
 
 
 
- /*INICIO DE RUTAS DE GOOGLE SINGLE SIGN ON */
-/* Route::get('/google-auth/redirect', function () {
-    return Socialite::driver('google')->redirect();
-});
-Route::get('/google-auth/callback', [LoginController::class, 'handleProviderCallback']);
- 
-Route::get('/google-auth/callback', function () {
-    $user_google = Socialite::driver('google')->stateless()->user();
-
-    $user = User::where('EMAIL', $user_google->email)->first();
-
-    if ($user) {
-        // Verificar si el usuario está bloqueado
-        if ($user->ID_ESTADO_USUARIO == 3) { // 3 es el ID para 'Bloqueado'
-            return redirect('/login')->withErrors([
-                'email' => 'Tu cuenta ha sido bloqueada por demasiados intentos fallidos, para poder ingresar restablezca su contraseña o comuníquese con el administrador.',
-            ]);
-        }
-
-        $user->update([
-            'google_id' => $user_google->id,
-        ]);
-    } else {
-        $date = new DateTime('now', new DateTimeZone('UTC'));
-        $date->setTimezone(new DateTimeZone('America/Tegucigalpa'));
-        $user = User::create([
-            'google_id' => $user_google->id,
-            'NOMBRE_USUARIO' => $user_google->name,
-            'EMAIL' => $user_google->email,
-            'PRIMER_INGRESO' => $date->format('Y-m-d H:i:s'),
-            'FECHA_ULTIMA_CONEXION' => $date->format('Y-m-d H:i:s'),
-            'ID_ESTADO_USUARIO' => 1, // Asignar el estado 'Activo' por defecto
-        ]);
-    }
-
-    Auth::login($user);
-
-    return redirect('/home');
-});
-
-<div class="social-auth-links text-center mt-2 mb-3">
-<p>- O -</p>
-<a href="/google-auth/redirect" class="btn btn-block btn-danger">
-    <i class="fab fa-google"></i> Inicia sesión con tu Cuenta de Google
-</a>
-</div>/*
-/*FIN RUTAS DE GOOGLE SINGLE SIGN ON*/
