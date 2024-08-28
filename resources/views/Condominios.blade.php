@@ -189,7 +189,31 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     $(document).ready(function() {
-        var table = $('#condominios-table').DataTable({
+        var table = $('#condominios-table').DataTable({"processing": true,
+            "serverSide": true,
+            "ajax": {
+            "url": "{{ route('Condominios.fetch') }}",
+            "type": "GET"
+        },
+        "columns": [
+            { "data": "ID_CONDOMINIO" },
+            { "data": "TIPOCONDOMINIO" },
+            { "data": "DESCRIPCION" },
+            {
+                "data": null,
+                "orderable": false,
+                "searchable": false,
+                
+         "render": function(data, type, row) {
+                    return `
+                        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#editarCondominioModal${row.ID_CONDOMINIO}">Editar</button>
+                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#eliminarCondominioModal${row.ID_CONDOMINIO}">Eliminar</button>
+
+                    
+                    `;
+                }
+            }
+        ],
             "language": {
                 "lengthMenu": "Mostrar _MENU_ registros por página",
                 "zeroRecords": "No se encontraron resultados",
