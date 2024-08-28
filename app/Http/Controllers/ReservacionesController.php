@@ -28,6 +28,10 @@ class ReservacionesController extends Controller
         $baseUrl = Config::get('api.base_url');
         $response = Http::get($baseUrl.'/SEL_TBL_RESERVAS');
         $reservaciones = $response->json();
+        
+        if ($hasPermission) {
+            $this->logActivity('reservaciones', 'get');
+        }
 
         $personas = $this->getPersonas();
         $instalaciones = $this->getInstalaciones();
@@ -37,14 +41,63 @@ class ReservacionesController extends Controller
             $reserva['PERSONA'] = $personas->firstWhere('ID_PERSONA', $reserva['ID_PERSONA'])->NOMBRE_PERSONA ?? 'Desconocido';
             $reserva['INSTALACION'] = $instalaciones->firstWhere('ID_INSTALACION', $reserva['ID_INSTALACION'])->NOMBRE_INSTALACION ?? 'Desconocido';
             $reserva['ESTADO_RESERVA'] = $estadoreservas->firstWhere('ID_ESTADO_RESERVA', $reserva['ID_ESTADO_RESERVA'])->DESCRIPCION ?? 'Desconocido';
-        }
+        
+        // Formatear la fecha y hora
+        $reserva['HORA_FECHA'] = $reserva['HORA_FECHA'] ? \Carbon\Carbon::parse($reserva['HORA_FECHA'])->format('Y-m-d H:i:s') : '';
+    }
 
-        if ($hasPermission) {
-            $this->logActivity('reservaciones', 'get');
-        }
-
+      
         return view('reservaciones', compact('reservaciones', 'personas', 'instalaciones', 'estadoreservas', 'hasPermission'));
     }
+    
+    public function fetchReservaciones(Request $request)
+{
+    $start = $request->input('start');
+    $length = $request->input('length');
+    $search = $request->input('search.value');
+
+    $baseUrl = Config::get('api.base_url');
+    $response = Http::get($baseUrl . '/SEL_TBL_RESERVAS');
+    $reservaciones = $response->json();
+
+     $personas = $this->getPersonas();
+        $instalaciones = $this->getInstalaciones();
+        $estadoreservas = $this->getEstadoreservas();
+
+    
+        foreach ($reservaciones as &$reserva) {
+            $reserva['PERSONA'] = $personas->firstWhere('ID_PERSONA', $reserva['ID_PERSONA'])->NOMBRE_PERSONA ?? 'Desconocido';
+            $reserva['INSTALACION'] = $instalaciones->firstWhere('ID_INSTALACION', $reserva['ID_INSTALACION'])->NOMBRE_INSTALACION ?? 'Desconocido';
+            $reserva['ESTADO_RESERVA'] = $estadoreservas->firstWhere('ID_ESTADO_RESERVA', $reserva['ID_ESTADO_RESERVA'])->DESCRIPCION ?? 'Desconocido';
+        
+        // Formatear la fecha y hora
+        $reserva['HORA_FECHA'] = $reserva['HORA_FECHA'] ? \Carbon\Carbon::parse($reserva['HORA_FECHA'])->format('Y-m-d H:i:s') : '';
+    }
+        
+    // Filtrado de búsqueda
+    if ($search) {
+        $reservaciones = array_filter($reservaciones, function ($reserva) use ($search) {
+            return stripos($reserva['INSTALACION'], $search) !== false ||
+            stripos($reserva['PERSONA'], $search) !== false ||
+            stripos($reserva['ESTADO_RESERVA'], $search) !== false ||
+            stripos($reserva['TIPO_EVENTO'], $search) !== false ||
+            stripos($reserva['HORA_FECHA'], $search) !== false;
+                   
+        });
+    }
+
+    // Paginación
+    $totalData = count($reservaciones);
+    $reservaciones = array_slice($reservaciones, $start, $length);
+
+    return response()->json([
+        "draw" => intval($request->input('draw')),
+        "recordsTotal" => $totalData,
+        "recordsFiltered" => $totalData,
+        "data" => $reservaciones
+    ]);
+}
+
 
     public function getPersonas()
     {
@@ -210,7 +263,7 @@ class ReservacionesController extends Controller
 
     public function generarReporte(Request $request)
     {
-        $query = strtoupper($request->input('persona_descripcion'));
+        $query = strtoupper($request->input('nombre'));
         $baseUrl = Config::get('api.base_url');
         $response = Http::get($baseUrl.'/SEL_TBL_RESERVAS');
         
@@ -232,7 +285,10 @@ class ReservacionesController extends Controller
             // Filtrar las reservaciones si se ha proporcionado un nombre de PERSONA
             if ($query) {
                 $reservaciones = array_filter($reservaciones, function ($reserva) use ($query) {
-                    return stripos($reserva['PERSONA'], $query) !== false;
+            $matchResidente = stripos($reserva['PERSONA'], $query) !== false;
+            $matchFecha = stripos(\Carbon\Carbon::parse($reserva['HORA_FECHA'])->format('Y-m-d H:i:s'), $query) !== false;
+                        return $matchResidente || $matchFecha;
+
                 });
             }
 
