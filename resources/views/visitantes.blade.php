@@ -56,7 +56,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($visitantes as $regvisita)
+                    @foreach ($visitantesData as $regvisita)
                         <tr>
                             <td>{{ $regvisita["ID_VISITANTE"] }}</td>
                             <td>{{ $regvisita["PERSONA"] }}</td>
@@ -223,8 +223,52 @@
 <script src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.print.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-    $(document).ready(function() {
-        var table = $('#visitantes').DataTable({
+  $(document).ready(function() {
+    var table = $('#visitantes').DataTable({
+        "processing": true,
+        "serverSide": true,
+        "ajax": {
+            "url": "{{ route('Visitantes.fetch') }}",
+            "type": "GET"
+        },
+        "columns": [
+            { "data": "ID_VISITANTE" },
+            { "data": "PERSONA" },
+            { "data": "NOMBRE_VISITANTE" },
+            { "data": "DNI_VISITANTE" },
+            { "data": "NUM_PERSONAS" },
+            { "data": "NUM_PLACA" },
+            { "data": "FECHA_HORA" },
+            {
+                "data": null,
+                "orderable": false,
+                "searchable": false,
+                "render": function(data, type, row) {
+                    return `
+                        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#editarVisitante${row.ID_VISITANTE}">Editar</button>
+                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#eliminarVisitante${row.ID_VISITANTE}">Eliminar</button>
+
+                        <!-- Modal de edición de visitante -->
+                        <div class="modal fade" id="editarVisitante${row.ID_VISITANTE}" tabindex="-1" role="dialog" aria-labelledby="editarVisitante${row.ID_VISITANTE}Label" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <!-- Contenido del modal aquí -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Modal de eliminación de visitante -->
+                        <div class="modal fade" id="eliminarVisitante${row.ID_VISITANTE}" tabindex="-1" role="dialog" aria-labelledby="eliminarVisitante${row.ID_VISITANTE}Label" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <!-- Contenido del modal aquí -->
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+        ],
             "language": {
                 "lengthMenu": "Mostrar _MENU_ registros por página",
                 "zeroRecords": "No se encontraron resultados",
