@@ -302,9 +302,9 @@
             var inputs = document.querySelectorAll('input[id^="' + fieldId + '"]');
             inputs.forEach(function(input) {
                 input.addEventListener('input', function(e) {
-                    const validChars = /^[a-zA-Z\s]*$/;
+                const validChars = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]*$/;
                     if (!validChars.test(input.value)) {
-                        input.value = input.value.replace(/[^a-zA-Z\s]/g, '');
+                    input.value = input.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '');
                     }
                 });
             });
