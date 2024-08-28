@@ -30,7 +30,7 @@
             <div class="d-flex justify-content-end">
                 <button class="btn btn-primary mr-2" data-toggle="modal" data-target="#modalAgregarReservacion">Nuevo</button>
                 <form id="reporteForm" method="GET" action="{{ route('reservaciones.reporte') }}" target="_blank">
-                    <input type="hidden" name="persona_descripcion" id="searchInput">
+                    <input type="hidden" name="nombre" id="searchInput">
                     <button type="submit" class="btn btn-success mt-2">Generar Reporte</button>
                 </form>
             </div>
@@ -244,6 +244,34 @@
     $(document).ready(function() {
         // Inicialización de DataTables
         var table = $('#reservaciones').DataTable({
+            "processing": true,
+            "serverSide": true,
+            "ajax": {
+            "url": "{{ route('Reservaciones.fetch') }}",
+            "type": "GET"
+        },
+        "columns": [
+            { "data": "ID_RESERVA" },
+            { "data": "PERSONA" },
+            { "data": "INSTALACION" },
+            { "data": "ESTADO_RESERVA" },
+            { "data": "TIPO_EVENTO" },
+            { "data": "HORA_FECHA" },
+            {
+                "data": null,
+                "orderable": false,
+                "searchable": false,
+                
+         "render": function(data, type, row) {
+                    return `
+                        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#editarReservacion${row.ID_RESERVA}">Editar</button>
+                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#eliminarReservacion${row.ID_RESERVA}">Eliminar</button>
+
+                    
+                    `;
+                }
+            }
+        ],
             "language": {
                 "lengthMenu": "Mostrar _MENU_ registros por página",
                 "zeroRecords": "No se encontraron resultados",
@@ -290,6 +318,11 @@
             var searchValue = table.search();
             $('#searchInput').val(searchValue); // Asigna el valor al campo oculto del formulario
         });
+          // Verifica el valor antes de enviar el formulario
+    $('#reporteForm').on('submit', function(e) {
+        var searchValue = $('#searchInput').val();
+        console.log("Valor enviado para el reporte: " + searchValue);  // Verifica el valor antes de enviar el formulario
+    });
 
         // Validar entrada en tiempo real
         function validarInput(input) {
