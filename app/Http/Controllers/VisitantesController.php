@@ -12,44 +12,94 @@ use DateTime;
 use DateTimeZone;
 use App\Models\User;
 use Illuminate\Support\Facades\Config;
-
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 
 class VisitantesController extends Controller
 {
     use LogsActivity, HandlesAuthorizationExceptions;
 
-    public function Visitante()
-    {
-        $hasPermission = true;
-        try {
-            $this->authorize('view', User::class);
-        } catch (AuthorizationException $e) {
-            $hasPermission = false;
-        }
-        $baseUrl = Config::get('api.base_url'); // Obtiene la URL base de la API desde la configuración
-        $response = Http::get($baseUrl.'/SEL_REGVISITAS');
-        $visitantes = $response->json();
-        
-        // Registrar la actividad solo si se tiene permiso
-        if ($hasPermission) {
-            $this->logActivity('visitantes', 'get');
-        }
-
-        // Obtener personas
-        $personas = $this->getPersonas();
-
-        // Asignar los nombres de personas a los visitantes
-        foreach ($visitantes as &$regvisita) {
-            $regvisita['PERSONA'] = $personas->firstWhere('ID_PERSONA', $regvisita['ID_PERSONA'])->NOMBRE_PERSONA ?? 'Desconocido';
-        }
-
-        return view('visitantes', compact('visitantes', 'personas','hasPermission'));
+public function Visitante()
+{
+    $hasPermission = true;
+    try {
+        $this->authorize('view', User::class);
+    } catch (AuthorizationException $e) {
+        $hasPermission = false;
     }
 
-    public function getPersonas()
-    {
-        return DB::table('TBL_PERSONAS')->select('ID_PERSONA', 'NOMBRE_PERSONA')->get();
+    $baseUrl = Config::get('api.base_url');
+    $response = Http::get($baseUrl . '/SEL_REGVISITAS');
+    $visitantesData = $response->json();
+
+    // Registrar la actividad solo si se tiene permiso
+    if ($hasPermission) {
+        $this->logActivity('visitantes', 'get');
     }
+
+    // Obtener personas
+    $personas = $this->getPersonas();
+
+    // Asignar los nombres de personas a los visitantes
+    foreach ($visitantesData as &$visitante) {
+        $persona = $personas->firstWhere('ID_PERSONA', $visitante['ID_PERSONA']);
+        $visitante['PERSONA'] = $persona->NOMBRE_PERSONA ?? 'Desconocido';
+    // Formatear la fecha y hora
+        $visitante['FECHA_HORA'] = $visitante['FECHA_HORA'] ? \Carbon\Carbon::parse($visitante['FECHA_HORA'])->format('Y-m-d H:i:s') : '';
+    }
+    return view('visitantes', compact('visitantesData', 'personas', 'hasPermission'));
+}
+
+public function fetchVisitantes(Request $request)
+{
+    $start = $request->input('start');
+    $length = $request->input('length');
+    $search = $request->input('search.value');
+
+    $baseUrl = Config::get('api.base_url');
+    $response = Http::get($baseUrl . '/SEL_REGVISITAS');
+    $visitantesData = $response->json();
+
+    // Obtener personas
+    $personas = $this->getPersonas();
+
+    // Reemplazar IDs con nombres
+    foreach ($visitantesData as &$visitante) {
+        $visitante['PERSONA'] = $personas->firstWhere('ID_PERSONA', $visitante['ID_PERSONA'])->NOMBRE_PERSONA ?? $visitante['ID_PERSONA'];
+    
+        // Formatear la fecha y hora
+        $visitante['FECHA_HORA'] = $visitante['FECHA_HORA'] ? \Carbon\Carbon::parse($visitante['FECHA_HORA'])->format('Y-m-d H:i:s') : '';
+    }
+    // Filtrado de búsqueda
+    if ($search) {
+        $visitantesData = array_filter($visitantesData, function ($visitante) use ($search) {
+            return stripos($visitante['NOMBRE_VISITANTE'], $search) !== false ||
+            stripos($visitante['PERSONA'], $search) !== false ||
+            stripos($visitante['NUM_PERSONAS'], $search) !== false ||
+            stripos($visitante['FECHA_HORA'], $search) !== false ||
+            stripos($visitante['NUM_PLACA'], $search) !== false ||
+            stripos($visitante['DNI_VISITANTE'], $search) !== false;
+                   
+        });
+    }
+
+    // Paginación
+    $totalData = count($visitantesData);
+    $visitantesData = array_slice($visitantesData, $start, $length);
+
+    return response()->json([
+        "draw" => intval($request->input('draw')),
+        "recordsTotal" => $totalData,
+        "recordsFiltered" => $totalData,
+        "data" => $visitantesData
+    ]);
+}
+
+public function getPersonas()
+{
+    return DB::table('TBL_PERSONAS')->select('ID_PERSONA', 'NOMBRE_PERSONA')->get();
+}
+
 
    public function crear(Request $request)
 {
