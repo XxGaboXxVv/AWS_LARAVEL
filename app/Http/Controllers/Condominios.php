@@ -45,6 +45,45 @@ class Condominios extends Controller
         
         return view('Condominios', compact('Condominios', 'tipodecondominios', 'hasPermission'));
     }
+    
+public function fetchCondominios(Request $request)
+{
+    $start = $request->input('start');
+    $length = $request->input('length');
+    $search = $request->input('search.value');
+
+    $baseUrl = Config::get('api.base_url');
+    $response = Http::get($baseUrl . '/SEL_CONDOMINIOS');
+    $Condominios = $response->json();
+
+   // Obtener Tipo de Condominio
+        $tipodecondominios = $this->getcondominio();
+
+        // Asignar los nombres de Tipo de Condominio a los Condominios
+        foreach ($Condominios as &$Condominio) {
+            $tipoCondominio = $tipodecondominios->firstWhere('ID_TIPO_CONDOMINIO', $Condominio['ID_TIPO_CONDOMINIO']);
+            $Condominio['TIPOCONDOMINIO'] = $tipoCondominio->DESCRIPCION ?? 'Desconocido';
+        }
+    // Filtrado de búsqueda
+    if ($search) {
+        $Condominios = array_filter($Condominios, function ($Condominio) use ($search) {
+            return stripos($Condominio['TIPOCONDOMINIO'], $search) !== false ||
+            stripos($Condominio['DESCRIPCION'], $search) !== false;
+                   
+        });
+    }
+
+    // Paginación
+    $totalData = count($Condominios);
+    $Condominios = array_slice($Condominios, $start, $length);
+
+    return response()->json([
+        "draw" => intval($request->input('draw')),
+        "recordsTotal" => $totalData,
+        "recordsFiltered" => $totalData,
+        "data" => $Condominios
+    ]);
+}
 
     public function getcondominio()
     {
