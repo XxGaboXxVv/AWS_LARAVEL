@@ -227,8 +227,36 @@
 <script src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.print.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-    $(document).ready(function() {
-        var table = $('#bitacora-table').DataTable({
+$(document).ready(function() {
+    $('#bitacora-table').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: {
+            url: "{{ route('fetch.bitacora.visita') }}",
+            type: 'GET',
+        },
+        columns: [
+            { data: 'ID_BITACORA_VISITA', name: 'ID_BITACORA_VISITA' },
+            { data: 'PERSONA', name: 'PERSONA' },
+            { data: 'VISITANTE', name: 'VISITANTE' },
+            { data: 'VISITANTE_RECURRENTE', name: 'VISITANTE_RECURRENTE' },
+            { data: 'NUM_PERSONA', name: 'NUM_PERSONA' },
+            { data: 'NUM_PLACA', name: 'NUM_PLACA' },
+            { data: 'FECHA_HORA', name: 'FECHA_HORA' },
+               {
+            data: null,
+            name: 'ACCIONES',
+            orderable: false,
+            searchable: false,
+            render: function (data, type, row) {
+                return `
+                    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#editarVisitaModal${row.ID_BITACORA_VISITA}">Editar</button>
+                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#eliminarVisitaModall${row.ID_BITACORA_VISITA}">Eliminar</button>
+                `;
+            }
+        }
+    ],
+
             "language": {
                 "lengthMenu": "Mostrar _MENU_ registros por página",
                 "zeroRecords": "No se encontraron resultados",
