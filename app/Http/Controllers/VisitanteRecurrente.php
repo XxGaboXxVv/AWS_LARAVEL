@@ -17,34 +17,92 @@ class VisitanteRecurrente extends Controller
 {
    use LogsActivity, HandlesAuthorizationExceptions;
 
-    public function getRecurrente()
-    {
-
+   public function getRecurrente()
+{
     $hasPermission = true;
-        try {
-            $this->authorize('view', User::class);
-        } catch (AuthorizationException $e) {
-            $hasPermission = false;
-        }
-        $baseUrl = Config::get('api.base_url');
-        $response = Http::get($baseUrl.'/SEL_VISITANTES_RECURRENTES');
-        $Recurrentes = $response->json();
-
-        // Obtener personas
-        $personas = $this->getPersonas();
-
-        // Asignar los nombres de personas a los Visitantes Recurrentes
-        foreach ($Recurrentes as &$recurrente) {
-            $recurrente['PERSONA'] = $personas->firstWhere('ID_PERSONA', $recurrente['ID_PERSONA'])->NOMBRE_PERSONA ?? 'Desconocido';
-        }
-
-        return view('VisitanteRecurrentes', compact('Recurrentes', 'personas','hasPermission'));
+    try {
+        $this->authorize('view', User::class);
+    } catch (AuthorizationException $e) {
+        $hasPermission = false;
     }
 
-    public function getPersonas()
-    {
-        return DB::table('TBL_PERSONAS')->select('ID_PERSONA', 'NOMBRE_PERSONA')->get();
+    $baseUrl = Config::get('api.base_url');
+    $response = Http::get($baseUrl . '/SEL_VISITANTES_RECURRENTES');
+    $visitantesRecurrentesData = $response->json();
+
+    // Registrar la actividad solo si se tiene permiso
+    if ($hasPermission) {
+        $this->logActivity('VisitanteRecurrentes', 'get');
     }
+
+    // Obtener personas
+    $personas = $this->getPersonas();
+
+    // Asignar los nombres de personas a los visitantes recurrentes
+    foreach ($visitantesRecurrentesData as &$visitanteRecurrente) {
+        $persona = $personas->firstWhere('ID_PERSONA', $visitanteRecurrente['ID_PERSONA']);
+        $visitanteRecurrente['PERSONA'] = $persona->NOMBRE_PERSONA ?? 'Desconocido';
+        // Formatear la fecha y hora
+        $visitanteRecurrente['FECHA_HORA'] = $visitanteRecurrente['FECHA_HORA'] ? \Carbon\Carbon::parse($visitanteRecurrente['FECHA_HORA'])->format('Y-m-d H:i:s') : '';
+         // Formatear la fecha y hora
+        $visitanteRecurrente['FECHA_VENCIMIENTO'] = $visitanteRecurrente['FECHA_VENCIMIENTO'] ? \Carbon\Carbon::parse($visitanteRecurrente['FECHA_VENCIMIENTO'])->format('Y-m-d H:i:s') : '';
+    }
+
+    return view('VisitanteRecurrentes', compact('visitantesRecurrentesData', 'personas', 'hasPermission'));
+}
+
+public function fetchVisitantesRecurrentes(Request $request)
+{
+    $start = $request->input('start', 0);
+    $length = $request->input('length', 10);
+    $search = $request->input('search.value', '');
+
+    $baseUrl = Config::get('api.base_url');
+    $response = Http::get($baseUrl . '/SEL_VISITANTES_RECURRENTES');
+
+    if ($response->failed()) {
+        return response()->json(['error' => 'No se pudo obtener los datos'], 500);
+    }
+
+    $visitantesRecurrentesData = $response->json();
+
+    $personas = $this->getPersonas();
+
+    foreach ($visitantesRecurrentesData as &$visitanteRecurrente) {
+        $visitanteRecurrente['PERSONA'] = $personas->firstWhere('ID_PERSONA', $visitanteRecurrente['ID_PERSONA'])->NOMBRE_PERSONA ?? $visitanteRecurrente['ID_PERSONA'];
+        $visitanteRecurrente['FECHA_HORA'] = $visitanteRecurrente['FECHA_HORA'] ? \Carbon\Carbon::parse($visitanteRecurrente['FECHA_HORA'])->format('Y-m-d H:i:s') : '';
+        // Formatear la fecha y hora
+        $visitanteRecurrente['FECHA_VENCIMIENTO'] = $visitanteRecurrente['FECHA_VENCIMIENTO'] ? \Carbon\Carbon::parse($visitanteRecurrente['FECHA_VENCIMIENTO'])->format('Y-m-d H:i:s') : '';
+    }
+
+    if ($search) {
+        $visitantesRecurrentesData = array_filter($visitantesRecurrentesData, function ($visitanteRecurrente) use ($search) {
+            return stripos($visitanteRecurrente['NOMBRE_VISITANTE'], $search) !== false ||
+                stripos($visitanteRecurrente['PERSONA'], $search) !== false ||
+                stripos($visitanteRecurrente['FECHA_HORA'], $search) !== false ||
+                stripos($visitanteRecurrente['FECHA_VENCIMIENTO'], $search) !== false ||
+                stripos($visitanteRecurrente['NUM_PLACA'], $search) !== false ||
+                stripos($visitanteRecurrente['DNI_VISITANTE'], $search) !== false;
+        });
+    }
+
+    $totalData = count($visitantesRecurrentesData);
+    $visitantesRecurrentesData = array_slice($visitantesRecurrentesData, $start, $length);
+
+    return response()->json([
+        "draw" => intval($request->input('draw')),
+        "recordsTotal" => $totalData,
+        "recordsFiltered" => $totalData,
+        "data" => $visitantesRecurrentesData
+    ]);
+}
+
+
+public function getPersonas()
+{
+    return DB::table('TBL_PERSONAS')->select('ID_PERSONA', 'NOMBRE_PERSONA')->get();
+}
+
 
     public function crear(Request $request)
 {
