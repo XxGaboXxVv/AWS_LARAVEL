@@ -291,6 +291,33 @@
     <script>
         $(document).ready(function() {
             var table = $('#usuarios').DataTable({
+            "processing": true,
+            "serverSide": true,
+            "ajax": {
+            "url": "{{ route('Usuarios-fetch') }}",
+            "type": "GET"
+        },
+        "columns": [
+            { "data": "ID_USUARIO" },
+            { "data": "ROL" },
+            { "data": "NOMBRE_USUARIO" },
+            { "data": "ESTADO_USUARIO" },
+            { "data": "EMAIL" },
+            { "data": "FECHA_VENCIMIENTO" },
+            {
+                "data": null,
+                "orderable": false,
+                "searchable": false,
+                
+         "render": function(data, type, row) {
+                    return `
+                        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#editarUsuario${row.ID_USUARIO}">Editar</button>
+                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#eliminarUsuario${row.ID_USUARIO}">Eliminar</button>
+                        <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#mostrarMas${row.ID_USUARIO}">Mostrar Mas</button>
+                    `;
+                }
+            }
+        ],
                 "language": {
                     "lengthMenu": "Mostrar _MENU_ registros por página",
                     "zeroRecords": "No se encontraron resultados",
