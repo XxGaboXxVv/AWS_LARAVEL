@@ -61,11 +61,12 @@ class UsuarioController extends Controller
         $roles = $this->getRoles();
         $estadosUsuario = $this->getEstadosUsuario();
 
-        // Asignar las descripciones de roles y estados a los usuarios
+       // Asignar las descripciones de roles y estados a los usuarios
         foreach ($Usuarios as &$usuario) {
             $usuario['ROL'] = $roles->firstWhere('ID_ROL', $usuario['ID_ROL'])->ROL ?? 'Desconocido';
-            $usuario['ESTADO_USUARIO'] = $estadosUsuario->firstWhere('ID_ESTADO_USUARIO', $usuario['ID_ESTADO_USUARIO'])->DESCRIPCION ?? 'Desconocido';
-        }
+            $usuario['ESTADO_USUARIO'] = $estadosUsuario->firstWhere('ID_ESTADO_USUARIO', $usuario['ID_ESTADO_USUARIO'])->DESCRIPCION ?? 'Desconocido'; // Formatear la fecha y hora
+        $usuario['FECHA_VENCIMIENTO'] = $usuario['FECHA_VENCIMIENTO'] ? \Carbon\Carbon::parse($usuario['FECHA_VENCIMIENTO'])->format('Y-m-d H:i:s') : '';
+    }
          // Obtener el parámetro de fecha de vencimiento
          $parametroFechaVencimiento = DB::table('TBL_MS_PARAMETROS')
          ->where('PARAMETRO', 'FECHA_VENCIMIENTO')
@@ -78,6 +79,60 @@ class UsuarioController extends Controller
  } else {
      return view('error')->withErrors('Error al obtener la lista de Usuarios.');
  }
+}
+public function fetchUsuarios(Request $request)
+{
+    $start = $request->input('start', 0);
+    $length = $request->input('length', 10);
+    $search = $request->input('search.value', '');
+
+    $baseUrl = Config::get('api.base_url');
+    $response = Http::get($baseUrl . '/SEL_USUARIO');
+
+    if ($response->failed()) {
+        return response()->json(['error' => 'No se pudo obtener los datos'], 500);
+    }
+
+    $Usuarios = $response->json();
+
+  
+        // Obtener roles y estados de usuario
+        $roles = $this->getRoles();
+        $estadosUsuario = $this->getEstadosUsuario();
+
+        // Asignar las descripciones de roles y estados a los usuarios
+        foreach ($Usuarios as &$usuario) {
+            $usuario['ROL'] = $roles->firstWhere('ID_ROL', $usuario['ID_ROL'])->ROL ?? 'Desconocido';
+            $usuario['ESTADO_USUARIO'] = $estadosUsuario->firstWhere('ID_ESTADO_USUARIO', $usuario['ID_ESTADO_USUARIO'])->DESCRIPCION ?? 'Desconocido'; // Formatear la fecha y hora
+        $usuario['FECHA_VENCIMIENTO'] = $usuario['FECHA_VENCIMIENTO'] ? \Carbon\Carbon::parse($usuario['FECHA_VENCIMIENTO'])->format('Y-m-d H:i:s') : '';
+    }
+         // Obtener el parámetro de fecha de vencimiento
+         $parametroFechaVencimiento = DB::table('TBL_MS_PARAMETROS')
+         ->where('PARAMETRO', 'FECHA_VENCIMIENTO')
+         ->value('VALOR');
+
+     // Si no se encuentra el parámetro, se usa un valor por defecto (ejemplo: 90 días)
+     $diasVencimiento = $parametroFechaVencimiento ? intval($parametroFechaVencimiento) : 90;
+
+    if ($search) {
+        $Usuarios = array_filter($Usuarios, function ($usuario) use ($search) {
+            return stripos($usuario['ROL'], $search) !== false ||
+                stripos($usuario['NOMBRE_USUARIO'], $search) !== false ||
+                stripos($usuario['ESTADO_USUARIO'], $search) !== false ||
+                stripos($usuario['EMAIL'], $search) !== false ||
+                stripos($usuario['FECHA_VENCIMIENTO'], $search) !== false;
+        });
+    }
+
+    $totalData = count($Usuarios);
+    $Usuarios = array_slice($Usuarios, $start, $length);
+
+    return response()->json([
+        "draw" => intval($request->input('draw')),
+        "recordsTotal" => $totalData,
+        "recordsFiltered" => $totalData,
+        "data" => $Usuarios
+    ]);
 }
 
     
@@ -488,8 +543,12 @@ class UsuarioController extends Controller
         $fechaVencimiento = $date->modify("+$diasVencimiento days")->format('Y-m-d H:i:s');
         $usuario->FECHA_VENCIMIENTO = $fechaVencimiento;
     
+    // Generar el token de restablecimiento
+     $token = $this->generateResetToken($usuario->EMAIL);
+
         // Guardar la nueva contraseña y la fecha de vencimiento en la base de datos
         $usuario->save();
+        
     
         $details = [
             'link' => route('register.2fa', ['id_usuario' => $usuario['ID_USUARIO']])
