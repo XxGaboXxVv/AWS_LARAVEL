@@ -72,6 +72,67 @@ class ResidentesController extends Controller
             return view('residentes')->withErrors('Error al obtener la lista de Residentes.');
         }
     }
+    
+    public function fetchResidentes(Request $request)
+{
+    $start = $request->input('start', 0);
+    $length = $request->input('length', 10);
+    $search = $request->input('search.value', '');
+
+    $baseUrl = Config::get('api.base_url');
+    $response = Http::get($baseUrl . '/SEL_PERSONA');
+
+    if ($response->failed()) {
+        return response()->json(['error' => 'No se pudo obtener los datos'], 500);
+    }
+
+    $Residentes = $response->json();
+
+   // Obtener datos adicionales
+            $Contacto = $this->getContacto();
+            $TipoContacto = $this->getTipoContacto();
+            $tipopersona = $this->getTipoPersona();
+            $estadopersona = $this->getEstadoPersona();
+            $Parentesco = $this->getParentesco();
+            $Condominio = $this->getCondominio();
+            $TipoCondominio = $this->getTipoCondominio();
+
+            foreach ($Residentes as &$residente) {
+                $contacto = $Contacto->firstWhere('ID_CONTACTO', $residente['ID_CONTACTO']);
+                $condominio= $Condominio->firstWhere('ID_CONDOMINIO', $residente['ID_CONDOMINIO']);
+
+                $residente['CONTACTO'] = $contacto->DESCRIPCION ?? 'Desconocido';
+                $residente['ID_TIPO_CONTACTO'] = $contacto->ID_TIPO_CONTACTO ?? null;
+                $residente['TIPO_CONTACTO'] = $contacto ? ($TipoContacto->firstWhere('ID_TIPO_CONTACTO', $contacto->ID_TIPO_CONTACTO)->DESCRIPCION ?? 'Desconocido') : 'Desconocido';
+                $residente['TIPO_PERSONA'] = $tipopersona->firstWhere('ID_TIPO_PERSONA', $residente['ID_TIPO_PERSONA'])->DESCRIPCION ?? 'Desconocido';
+                $residente['ESTADO_PERSONA'] = $estadopersona->firstWhere('ID_ESTADO_PERSONA', $residente['ID_ESTADO_PERSONA'])->DESCRIPCION ?? 'Desconocido';
+                $residente['PARENTESCO'] = $Parentesco->firstWhere('ID_PARENTESCO', $residente['ID_PARENTESCO'])->DESCRIPCION ?? 'Desconocido';
+                $residente['CONDOMINIO'] = $condominio->DESCRIPCION ?? 'Desconocido';
+                $residente['ID_TIPO_CONDOMINIO'] = $condominio->ID_TIPO_CONDOMINIO ?? 'Desconocido';
+            }
+
+
+    if ($search) {
+        $Residentes = array_filter($Residentes, function ($residente) use ($search) {
+            return stripos($residente['NOMBRE_PERSONA'], $search) !== false ||
+                stripos($residente['DNI_PERSONA'], $search) !== false ||
+                stripos($residente['TIPO_CONTACTO'], $search) !== false ||
+                stripos($residente['CONTACTO'], $search) !== false ||
+                stripos($residente['ESTADO_PERSONA'], $search) !== false ||
+                stripos($residente['CONDOMINIO'], $search) !== false;
+        });
+    }
+
+    $totalData = count($Residentes);
+    $Residentes = array_slice($Residentes, $start, $length);
+
+    return response()->json([
+        "draw" => intval($request->input('draw')),
+        "recordsTotal" => $totalData,
+        "recordsFiltered" => $totalData,
+        "data" => $Residentes
+    ]);
+}
 
     // Funciones para obtener datos adicionales
     public function getContacto()
