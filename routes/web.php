@@ -88,6 +88,7 @@ Route::middleware([App\Http\Middleware\LogPageChanges::class])->group(function (
 /* RUTAS Usuario*/
 Route::middleware([App\Http\Middleware\LogPageChanges::class])->group(function () {
     Route::get('/Usuarios', [UsuarioController::class, 'GetUsuarios'])->name('Usuarios')->middleware('auth');
+    Route::get('/Usuarios-fetch', [UsuarioController::class, 'fetchUsuarios'])->name('Usuarios-fetch')->middleware('auth');
     Route::post('/usuarios/crear', [UsuarioController::class, 'crear'])->name('usuarios.crear')->middleware('auth');
     Route::post('/usuarios/editar/{id}', [UsuarioController::class, 'editar'])->name('usuarios.editar')->middleware('auth');
     Route::post('/usuarios/{id}/generar-password', [UsuarioController::class, 'generarPassword'])->name('usuarios.generarPassword');
@@ -127,6 +128,7 @@ Route::middleware([App\Http\Middleware\LogPageChanges::class])->group(function (
 /*RUTAS PARA RESIDENTES*/ 
 Route::middleware([App\Http\Middleware\LogPageChanges::class])->group(function () {
 Route::get('/Residentes', [ResidentesController::class, 'GetResidentes'])->name('Residentes')->middleware('auth');
+Route::get('/Residentes-fetch', [ResidentesController::class, 'fetchResidentes'])->name('Residentes-fetch')->middleware('auth');
 Route::post('/residentes/crear', [ResidentesController::class, 'crear'])->name('residentes.crear')->middleware('auth');
 Route::post('/residentes/editar/{id}', [ResidentesController::class, 'editar'])->name('residentes.editar');
 Route::post('/residentes/eliminar/{id}', [ResidentesController::class, 'eliminar'])->name('residentes.eliminar')->middleware('auth');
