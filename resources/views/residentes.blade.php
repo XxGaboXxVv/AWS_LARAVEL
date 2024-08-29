@@ -353,6 +353,35 @@
 <script>
     $(document).ready(function() {
         var table = $('#residentes').DataTable({
+            "processing": true,
+            "serverSide": true,
+            "ajax": {
+            "url": "{{ route('Residentes-fetch') }}",
+            "type": "GET"
+        },
+        "columns": [
+            { "data": "ID_PERSONA" },
+            { "data": "NOMBRE_PERSONA" },
+            { "data": "DNI_PERSONA" },
+            { "data": "TIPO_CONTACTO" },
+            { "data": "CONTACTO" },
+            { "data": "ESTADO_PERSONA" }, 
+            { "data": "CONDOMINIO" },
+
+            {
+                "data": null,
+                "orderable": false,
+                "searchable": false,
+                
+         "render": function(data, type, row) {
+                    return `
+                        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#editarResidente${row.ID_PERSONA}">Editar</button>
+                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#eliminarResidente${row.ID_PERSONA}">Eliminar</button>
+                        <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#mostrarMas${row.ID_PERSONA}">Mostrar Mas</button>
+                    `;
+                }
+            }
+        ],
             "language": {
                 "lengthMenu": "Mostrar _MENU_ registros por página",
                 "zeroRecords": "No se encontraron resultados",
