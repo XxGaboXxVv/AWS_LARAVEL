@@ -256,7 +256,7 @@ table.on('search.dt', function() {
             $('#nuevo-bitacora-form').on('submit', function(event) {
     event.preventDefault();
     $.ajax({
-        url: '/bitacora-usuario/create',
+        url: '/BitacoraUsuario/guardar',
         method: 'POST',
         data: $(this).serialize(),
         success: function(response) {
@@ -287,7 +287,7 @@ table.on('search.dt', function() {
     event.preventDefault();
     var bitacoraId = $('#editar_ID_BITACORA').val(); // Obteniendo el ID desde el campo oculto
     $.ajax({
-        url: '/bitacora-usuario/update/' + bitacoraId,
+        url: '/BitacoraUsuario/actualizar/' + bitacoraId,
         method: 'POST',
         data: $(this).serialize(),
         success: function(response) {
@@ -313,7 +313,7 @@ $('#eliminar-bitacora-form').on('submit', function(event) {
     var bitacoraId = $('#eliminar_ID_BITACORA').val();
     console.log("ID de Bitácora a eliminar:", bitacoraId);
     $.ajax({
-        url: '/bitacora-usuario/delete/' + bitacoraId,
+        url: '/BitacoraUsuario/eliminar/' + bitacoraId,
         method: 'POST',
         data: {
             _token: $('meta[name="csrf-token"]').attr('content')
