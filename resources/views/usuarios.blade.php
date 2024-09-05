@@ -41,135 +41,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                    @foreach ($Usuarios as $usuario)
-                        <tr>
-                            <td>{{ $usuario["ID_USUARIO"] }}</td>
-                            <td>{{ $usuario["ROL"] }}</td>
-                            <td>{{ $usuario["NOMBRE_USUARIO"] }}</td>
-                            <td>{{ $usuario["ESTADO_USUARIO"] }}</td>
-                            <td>{{ $usuario["EMAIL"] }}</td>
-                            <td>{{ $usuario["FECHA_VENCIMIENTO"] ? \Carbon\Carbon::parse($usuario["FECHA_VENCIMIENTO"])->setTimezone('America/Tegucigalpa')->format('Y-m-d H:i:s') : '' }}</td>
-                            <td>
-                                <button type="button" class="btn btn-info" data-toggle="modal" data-target="#editarUsuario{{ $usuario['ID_USUARIO'] }}">Editar</button>
-                                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#eliminarUsuario{{ $usuario['ID_USUARIO'] }}">Eliminar</button>
-                                <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#mostrarMas{{ $usuario['ID_USUARIO'] }}">Mostrar Mas</button>
-
-                            </td>
-                            </td>
-                        </tr>
-
-                              <!-- Modal de "Mostrar más" -->
-                              <div class="modal fade" id="mostrarMas{{ $usuario['ID_USUARIO'] }}" tabindex="-1" role="dialog" aria-labelledby="mostrarMas{{ $usuario['ID_USUARIO'] }}Label" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="mostrarMas{{ $usuario['ID_USUARIO'] }}Label">Detalles del Usuario</h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <p>ID Usuario: {{ $usuario["ID_USUARIO"] }}</p>
-                                        <p>Rol: {{ $usuario["ROL"] }}</p>
-                                        <p>Nombre de Usuario: {{ $usuario["NOMBRE_USUARIO"] }}</p>
-                                        <p>Estado de Usuario: {{ $usuario["ESTADO_USUARIO"] }}</p>
-                                        <p>Email: {{ $usuario["EMAIL"] }}</p>
-                                        <p>Fecha de Vencimiento: {{ $usuario["FECHA_VENCIMIENTO"] ? \Carbon\Carbon::parse($usuario["FECHA_VENCIMIENTO"])->setTimezone('America/Tegucigalpa')->format('Y-m-d H:i:s') : '' }}</p>
-                                        <p>Fecha Primer Ingreso: {{ $usuario["PRIMER_INGRESO"] ? \Carbon\Carbon::parse($usuario["PRIMER_INGRESO"])->setTimezone('America/Tegucigalpa')->format('Y-m-d H:i:s') : '' }}</p>
-                                        <p>Fecha Ultima Conexion: {{ $usuario["FECHA_ULTIMA_CONEXION"] ? \Carbon\Carbon::parse($usuario["FECHA_ULTIMA_CONEXION"])->setTimezone('America/Tegucigalpa')->format('Y-m-d H:i:s') : '' }}</p>
-                                        <p>Secreto de Google: {{ $usuario["google2fa_secret"] }}</p>
-                                        <p>Intentos Fallidos: {{ $usuario["INTENTOS_FALLIDOS"] }}</p>
-                                        <p>Intentos Fallidos OTP: {{ $usuario["INTENTOS_FALLIDOS_OTP"] }}</p>
-                                        <p>Ultimos Intentos Fallidos: {{ $usuario["ULTIMOS_INTENTOS_FALLIDOS"] ? \Carbon\Carbon::parse($usuario["ULTIMOS_INTENTOS_FALLIDOS"])->setTimezone('America/Tegucigalpa')->format('Y-m-d H:i:s') : '' }}</p>
-
-
-                                    </div>
-                                    <div class="modal-footer">
-                                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                 <!-- Modal de edición de usuario -->
-<div class="modal fade" id="editarUsuario{{ $usuario['ID_USUARIO'] }}" tabindex="-1" role="dialog" aria-labelledby="editarUsuario{{ $usuario['ID_USUARIO'] }}Label" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="editarUsuario{{ $usuario['ID_USUARIO'] }}Label">Editar Usuario</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form id="editarUsuarioForm{{ $usuario['ID_USUARIO'] }}" method="POST">
-                    @csrf
-                    <div class="form-group">
-                        <label for="ID_ROL">Rol:</label>
-                        <select class="form-control" id="ID_ROL" name="id_rol" required>
-                            @foreach ($roles as $rol)
-                                <option value="{{ $rol->ID_ROL }}" {{ $usuario['ID_ROL'] == $rol->ID_ROL ? 'selected' : '' }}>{{ $rol->ROL }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="NOMBRE_USUARIO">Nombre de Usuario:</label>
-                        <input type="text" class="form-control" id="NOMBRE_USUARIO" name="nombre_usuario" value="{{ $usuario['NOMBRE_USUARIO'] }}" oninput="this.value = this.value.toUpperCase()" maxlength="70"  required>
-                    </div>
-                    <script>
-                // Este script convierte el texto del campo de entrada en mayúsculas automáticamente
-                document.getElementById('nombre').addEventListener('input', function(e) {
-                 e.target.value = e.target.value.toUpperCase();
-                 });
-                </script>
-                    <div class="form-group">
-                        <label for="ID_ESTADO_USUARIO">Estado de Usuario:</label>
-                        <select class="form-control" id="ID_ESTADO_USUARIO" name="id_estado_usuario" required>
-                            @foreach ($estadosUsuario as $estado)
-                                <option value="{{ $estado->ID_ESTADO_USUARIO }}" {{ $usuario['ID_ESTADO_USUARIO'] == $estado->ID_ESTADO_USUARIO ? 'selected' : '' }}>{{ $estado->DESCRIPCION }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="EMAIL">Email:</label>
-                        <input type="email" class="form-control" id="EMAIL" name="email" value="{{ $usuario['EMAIL'] }}" maxlength="70" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$" title="Ingrese un correo electrónico válido" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
-                </form>
-                <form action="{{ route('usuarios.generarPassword', $usuario['ID_USUARIO']) }}" method="POST" style="margin-top: 10px;">
-                    @csrf
-                    <button type="submit" class="btn btn-warning">Actualizar Contraseña</button>
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-            <!-- Modal de eliminación de usuario -->
-                        <div class="modal fade" id="eliminarUsuario{{ $usuario['ID_USUARIO'] }}" tabindex="-1" role="dialog" aria-labelledby="eliminarUsuario{{ $usuario['ID_USUARIO'] }}Label" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="eliminarUsuario{{ $usuario['ID_USUARIO'] }}Label">Eliminar Usuario</h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <p>¿Estás seguro de que deseas eliminar al Usuario "{{ $usuario['NOMBRE_USUARIO'] }}"?</p>
-                                        <form action="{{ route('usuarios.eliminar') }}" method="POST">
-                                            @csrf
-                                            <input type="hidden" name="P_ID_USUARIO" value="{{ $usuario['ID_USUARIO'] }}">
-                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                                            <button type="submit" class="btn btn-danger">Eliminar</button>
-                                            
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    @endforeach
-                    </tbody>
+                    
                 </table>
             </div>
             @else
@@ -314,6 +186,112 @@
                         <button type="button" class="btn btn-info" data-toggle="modal" data-target="#editarUsuario${row.ID_USUARIO}">Editar</button>
                         <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#eliminarUsuario${row.ID_USUARIO}">Eliminar</button>
                         <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#mostrarMas${row.ID_USUARIO}">Mostrar Mas</button>
+                        
+                        
+                        <!-- Modal de "Mostrar más" -->
+                              <div class="modal fade" id="mostrarMas${row.ID_USUARIO}" tabindex="-1" role="dialog" aria-labelledby="mostrarMas${row.ID_USUARIO}Label" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="mostrarMas${row.ID_USUARIO}Label">Detalles del Usuario</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>ID Usuario: ${row.ID_USUARIO}</p>
+                                        <p>Rol: ${row.ROL}</p>
+                                        <p>Nombre de Usuario:${row.NOMBRE_USUARIO}</p>
+                                        <p>Estado de Usuario: ${row.ESTADO_USUARIO}</p>
+                                        <p>Email: ${row.EMAIL}</p>
+                                        <p>Fecha de Vencimiento:${row.FECHA_VENCIMIENTO} </p>
+                                        <p>Fecha Primer Ingreso: ${row.PRIMER_INGRESO}</p>
+                                        <p>Fecha Ultima Conexion: ${row.FECHA_ULTIMA_CONEXION}</p>
+                                        <p>Secreto de Google: ${row.google2fa_secret}</p>
+                                        <p>Intentos Fallidos: ${row.INTENTOS_FALLIDOS}</p>
+                                        <p>Intentos Fallidos OTP: ${row.INTENTOS_FALLIDOS_OTP}</p>
+                                        <p>Ultimos Intentos Fallidos: ${row.ULTIMOS_INTENTOS_FALLIDOS}</p>
+
+
+                                    </div>
+                                    <div class="modal-footer">
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        
+                    <!-- Modal de edición de usuario -->
+                    <div class="modal fade" id="editarUsuario${row.ID_USUARIO}" tabindex="-1" role="dialog" aria-labelledby="editarUsuario${row.ID_USUARIO}Label" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                    <h5 class="modal-title" id="editarUsuario${row.ID_USUARIO}Label">Editar Usuario</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                <form id="editarUsuarioForm" class="editarUsuarioForm" data-id="${row.ID_USUARIO}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    <div class="form-group">
+                        <label for="ID_ROL">Rol:</label>
+                        <select class="form-control" id="ID_ROL" name="id_rol" required>
+                            @foreach ($roles as $rol)
+                                <option value="{{ $rol->ID_ROL }}" ${row.ID_ROL == {{ $rol->ID_ROL }} ? 'selected' : ''}>{{ $rol->ROL }}</option>
+
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="NOMBRE_USUARIO">Nombre de Usuario:</label>
+                        <input type="text" class="form-control" id="NOMBRE_USUARIO" name="nombre_usuario" value="${row.NOMBRE_USUARIO}" oninput="this.value = this.value.toUpperCase()" maxlength="70"  required>
+                    </div>
+                  
+                    <div class="form-group">
+                        <label for="ID_ESTADO_USUARIO">Estado de Usuario:</label>
+                        <select class="form-control" id="ID_ESTADO_USUARIO" name="id_estado_usuario" required>
+                            @foreach ($estadosUsuario as $estado)
+                                <option value="{{ $estado->ID_ESTADO_USUARIO }}"${row.ID_ESTADO_USUARIO== {{ $estado->ID_ESTADO_USUARIO}} ? 'selected' : '' }> {{ $estado->DESCRIPCION }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="EMAIL">Email:</label>
+                        <input type="email" class="form-control" id="EMAIL" name="email" value="${row.EMAIL}" maxlength="70" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$" title="Ingrese un correo electrónico válido" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+               
+                    @csrf
+                    <button type="button" class="btn btn-warning actualizarPasswordBtn" data-id="${row.ID_USUARIO}">Actualizar Contraseña</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+            <!-- Modal de eliminación de usuario -->
+                        <div class="modal fade" id="eliminarUsuario${row.ID_USUARIO}" tabindex="-1" role="dialog" aria-labelledby="eliminarUsuario${row.ID_USUARIO}Label" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="eliminarUsuario${row.ID_USUARIO}Label">Eliminar Usuario</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>¿Estás seguro de que deseas eliminar al Usuario "${row.NOMBRE_USUARIO}"?</p>
+                                        <form action="{{ route('usuarios.eliminar') }}" method="POST">
+                                            @csrf
+                                            <input type="hidden" name="P_ID_USUARIO" value="${row.ID_USUARIO}">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                            <button type="submit" class="btn btn-danger">Eliminar</button>
+                                            
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     `;
                 }
             }
@@ -381,6 +359,9 @@
         // Evitar doble espacio
         input.value = input.value.replace(/ {2,}/g, ' ');   
     }
+    $(document).on('input', 'input[name="nombre_usuario"], input[name="email"]', function() {
+    validarInput(this);
+});
     const tituloFields = document.querySelectorAll('input[name="nombre_usuario"], input[name="email"]');
     tituloFields.forEach(function(input) {
         input.addEventListener('input', function() {
@@ -463,56 +444,102 @@
                     }
                 });
             });
+            
+$(document).on('submit', '.editarUsuarioForm', function(event) {
+    event.preventDefault();
+    
+    var id = $(this).data('id');
+    var formData = new FormData(this);  // Corrige la referencia a formData
+    
+    $.ajax({
+        url: '{{ route("usuarios.editar", ":id") }}'.replace(':id', id),
+        method: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(response) {
+            if (response.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Éxito',
+                    text: response.success,
+                }).then(() => {
+                    location.reload();
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: response.error,
+                });
+            }
+        },
+        error: function(xhr, status, error) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: xhr.responseText,
+            });
+        }
+    });
+});
 
-            // AJAX form submission for editing a user
-            $('form[id^="editarUsuarioForm"]').on('submit', function(event) {
-                event.preventDefault();
-                
-                var form = $(this);
-                var id = form.attr('id').replace('editarUsuarioForm', ''); // Extraemos el ID del usuario desde el ID del formulario
-                
-                $.ajax({
-                    url: "{{ route('usuarios.editar', '') }}/" + id,
-                    method: 'POST',
-                    data: form.serialize(),
-                    success: function(response) {
-                        if (response.success) {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Éxito',
-                                text: response.success,
-                            }).then((result) => {
-                                if (result.isConfirmed) {
-                                    window.location.href = "{{ route('Usuarios') }}";
-                                }
-                            });
-                        } else {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Error',
-                                text: response.error,
-                            });
-                        }
-                    },
-                    error: function(response) {
-                        var errors = response.responseJSON.errors;
-                        var errorMessage = '';
-                        for (var key in errors) {
-                            if (errors.hasOwnProperty(key)) {
-                                errorMessage += errors[key][0] + '\n';
-                            }
-                        }
+$(document).on('click', '.actualizarPasswordBtn', function(event) {
+    event.preventDefault();
+
+    // Obtén el ID del usuario del botón
+    var id = $(this).data('id');
+
+    // Confirmación antes de proceder
+    Swal.fire({
+        title: '¿Estás seguro?',
+        text: "Esto actualizará la contraseña del usuario.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Sí, actualizar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: '{{ route("usuarios.generarPassword", ":id") }}'.replace(':id', id),
+                method: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}'  // Necesario para la protección CSRF
+                },
+                success: function(response) {
+                    if (response.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Éxito',
+                            text: response.success,
+                        }).then(() => {
+                            location.reload();
+                        });
+                    } else {
                         Swal.fire({
                             icon: 'error',
                             title: 'Error',
-                            text: errorMessage,
+                            text: response.error,
                         });
                     }
-                });
+                },
+                error: function(xhr, status, error) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: xhr.responseText,
+                    });
+                }
             });
+        }
+    });
+});
 
             // AJAX form submission for deleting a user
-            $('form[action*="usuarios.eliminar"]').on('submit', function(event) {
+            $(document).on('submit', '.eliminar-usuario-form', function(event) {
+
+
                 event.preventDefault();
                 
                 var formData = new FormData(this);
