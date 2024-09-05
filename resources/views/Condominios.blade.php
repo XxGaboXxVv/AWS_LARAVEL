@@ -33,78 +33,6 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($Condominios as $Condominio)
-                            <tr>
-                                <td>{{ $Condominio["ID_CONDOMINIO"] }}</td>
-                                <td>{{ $Condominio["TIPOCONDOMINIO"] }}</td>
-                                <td>{{ $Condominio["DESCRIPCION"] }}</td>
-                                <td>
-                                    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#editarCondominioModal{{ $Condominio['ID_CONDOMINIO'] }}">Editar</button>
-                                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#eliminarCondominioModal{{ $Condominio['ID_CONDOMINIO'] }}">Eliminar</button>
-                                </td>
-                            </tr>
-
-                            <!-- Modal de editar condominio -->
-                            <div class="modal fade" id="editarCondominioModal{{ $Condominio['ID_CONDOMINIO'] }}" tabindex="-1" role="dialog" aria-labelledby="editarCondominioModalLabel{{ $Condominio['ID_CONDOMINIO'] }}" aria-hidden="true">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="editarCondominioModalLabel{{ $Condominio['ID_CONDOMINIO'] }}">Editar Condominio</h5>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <form class="editar-condominio-form" data-id="{{ $Condominio['ID_CONDOMINIO'] }}">
-                                                @csrf
-                                               
-                                                <div class="form-group">
-                                                <label for="tipo_condominio">TIPO DE CONDOMINIO:</label>
-                                                <select class="form-control" id="tipo_condominio" name="tipo_condominio" required>
-                                                @foreach($tipodecondominios as $tipo)
-                                                <option value="{{ $tipo->ID_TIPO_CONDOMINIO }}"{{ $Condominio['ID_TIPO_CONDOMINIO'] == $tipo->ID_TIPO_CONDOMINIO ? 'selected' : '' }}>{{ $tipo->DESCRIPCION }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-
-                                                <div class="form-group">
-                                                    <label for="descripcion">Descripción:</label>
-                                                    <input type="text" class="form-control" id="descripcion" name="descripcion"value="{{ $Condominio['DESCRIPCION'] }}" required>
-                                                </div>
-                                                <button type="submit" class="btn btn-primary">Guardar</button>
-                                            </form>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Modal de eliminar condominio -->
-                            <div class="modal fade" id="eliminarCondominioModal{{ $Condominio['ID_CONDOMINIO'] }}" tabindex="-1" role="dialog" aria-labelledby="eliminarCondominioModalLabel{{ $Condominio['ID_CONDOMINIO'] }}" aria-hidden="true">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="eliminarCondominioModalLabel{{ $Condominio['ID_CONDOMINIO'] }}">Eliminar Condominio</h5>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <p>¿Estás seguro de que deseas eliminar el condominio "{{ $Condominio['ID_CONDOMINIO'] }}"?</p>
-                                            <form class="eliminar-condominio-form" data-id="{{ $Condominio['ID_CONDOMINIO'] }}">
-                                                @csrf
-                                                <button type="submit" class="btn btn-danger">Eliminar</button>
-                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                        @endforeach
-                    </tbody>
                 </table>
             </div>
         </div>
@@ -208,8 +136,66 @@
                     return `
                         <button type="button" class="btn btn-info" data-toggle="modal" data-target="#editarCondominioModal${row.ID_CONDOMINIO}">Editar</button>
                         <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#eliminarCondominioModal${row.ID_CONDOMINIO}">Eliminar</button>
+                        
+                        <!-- Modal de editar condominio -->
+                            <div class="modal fade" id="editarCondominioModal${row.ID_CONDOMINIO}" tabindex="-1" role="dialog" aria-labelledby="editarCondominioModalLabel${row.ID_CONDOMINIO}} label" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="editarCondominioModalLabel${row.ID_CONDOMINIO}">Editar Condominio</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form class="editar-condominio-form" data-id="${row.ID_CONDOMINIO}"method="POST">
+                                                @csrf
+                                               
+                                                <div class="form-group">
+                                                <label for="tipo_condominio">TIPO DE CONDOMINIO:</label>
+                                                <select class="form-control" id="tipo_condominio" name="tipo_condominio" required>
+                                                @foreach($tipodecondominios as $tipo)
+                                                <option value="{{ $tipo->ID_TIPO_CONDOMINIO }}"${row.ID_TIPO_CONDOMINIO== {{$tipo->ID_TIPO_CONDOMINIO}} ? 'selected' : '' }}>{{ $tipo->DESCRIPCION }}
+                                                </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
 
-                    
+                                                <div class="form-group">
+                                                    <label for="descripcion">Descripción:</label>
+                                                    <input type="text" class="form-control" id="descripcion" name="descripcion"value="${row.DESCRIPCION}" required>
+                                                </div>
+                                                <button type="submit" class="btn btn-primary">Guardar</button>
+                                            </form>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                     <!-- Modal de eliminar condominio -->
+                            <div class="modal fade" id="eliminarCondominioModal${row.ID_CONDOMINIO}" tabindex="-1" role="dialog" aria-labelledby="eliminarCondominioModalLabel ${row.ID_CONDOMINIO} aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="eliminarCondominioModalLabel ${row.ID_CONDOMINIO}">Eliminar Condominio</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>¿Estás seguro de que deseas eliminar el condominio ${row.ID_CONDOMINIO}"?</p>
+                                            <form class="eliminar-condominio-form" data-id=" ${row.ID_CONDOMINIO}">
+                                                @csrf
+                                                <button type="submit" class="btn btn-danger">Eliminar</button>
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                     `;
                 }
             }
@@ -391,8 +377,8 @@ restringirCaracteresContactoDNI();
         });
 
         // AJAX form submission for updating a condominios
-        $('.editar-condominio-form').on('submit', function(event) {
-            event.preventDefault();
+        $(document).on('submit', '.editar-condominio-form', function(event) {
+    event.preventDefault();
 
             var id = $(this).data('id');
             var formData = new FormData(this);
@@ -431,8 +417,8 @@ restringirCaracteresContactoDNI();
         });
 
         // AJAX form submission for deleting a Instalaciones
-        $('.eliminar-condominio-form').on('submit', function(event) {
-            event.preventDefault();
+        $(document).on('submit', '.eliminar-condominio-form', function(event) {
+        event.preventDefault();
 
             var id = $(this).data('id');
 
