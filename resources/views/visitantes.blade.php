@@ -71,68 +71,12 @@
                             </td>
                         </tr>
                         
-                        <!-- Modal de edición de visitante -->
-                        <div class="modal fade" id="editarVisitante{{ $regvisita['ID_VISITANTE'] }}" tabindex="-1" role="dialog" aria-labelledby="editarVisitante{{ $regvisita['ID_VISITANTE'] }}Label" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="editarVisitante{{ $regvisita['ID_VISITANTE'] }}Label">Editar Visitante</h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <!-- Formulario de edición de visitante --> 
-                                        <form class="editar-visitante-form" data-id="{{ $regvisita['ID_VISITANTE'] }}" method="POST">
-                                            @csrf
-                                            <div class="form-group">
-                                            <label for="persona_descripcion">Nombre del Residente:</label>
-                                            <input type="text" class="form-control" id="persona_descripcion" name="persona_descripcion" value="{{ $regvisita['PERSONA'] }}" required>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="nombre_visitante">Nombre del Visitante:</label>
-                                                <input type="text" class="form-control" id="nombre_visitante" name="nombre_visitante" value="{{ $regvisita['NOMBRE_VISITANTE'] }}" required>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="dni_visitante">DNI del Visitante:</label>
-                                                <input type="text" class="form-control" id="dni_visitante" name="dni_visitante" value="{{ $regvisita['DNI_VISITANTE'] }}" required>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="num_personas">Número de Personas:</label>
-                                                <input type="number" class="form-control" id="num_personas" name="num_personas" value="{{ $regvisita['NUM_PERSONAS'] }}" required>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="num_placa">Número de Placa (Opcional):</label>
-                                                <input type="text" class="form-control" id="num_placa" name="num_placa" value="{{ $regvisita['NUM_PLACA'] }}">
-                                            </div>
-                                    
-                                            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
-                                        </form>
-                                    </div>
+                   
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Modal de eliminación de visitante -->
-                        <div class="modal fade" id="eliminarVisitante{{ $regvisita['ID_VISITANTE'] }}" tabindex="-1" role="dialog" aria-labelledby="eliminarVisitante{{ $regvisita['ID_VISITANTE'] }}Label" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="eliminarVisitante{{ $regvisita['ID_VISITANTE'] }}Label">Eliminar Visitante</h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <p>¿Estás seguro de que deseas eliminar al visitante ?</p>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <form class="eliminar-visitante-form" data-id="{{ $regvisita['ID_VISITANTE'] }}" method="POST">
-                                            @csrf
-                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                                            <button type="submit" class="btn btn-danger">Eliminar</button>
-                                        </form>
-                                    </div>
+                       
                                 </div>
                             </div>
                         </div>
@@ -247,24 +191,72 @@
                     return `
                         <button type="button" class="btn btn-info" data-toggle="modal" data-target="#editarVisitante${row.ID_VISITANTE}">Editar</button>
                         <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#eliminarVisitante${row.ID_VISITANTE}">Eliminar</button>
-
+                        
                         <!-- Modal de edición de visitante -->
                         <div class="modal fade" id="editarVisitante${row.ID_VISITANTE}" tabindex="-1" role="dialog" aria-labelledby="editarVisitante${row.ID_VISITANTE}Label" aria-hidden="true">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
-                                    <!-- Contenido del modal aquí -->
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Modal de eliminación de visitante -->
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="editarVisitante${row.ID_VISITANTE}Label">Editar Visitante</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <!-- Formulario de edición de visitante --> 
+                                        <form class="editar-visitante-form" data-id="${row.ID_VISITANTE}" method="POST">
+                                            @csrf
+                                            <div class="form-group">
+                                            <label for="persona_descripcion">Nombre del Residente:</label>
+                                            <input type="text" class="form-control" id="persona_descripcion" name="persona_descripcion" value="${row.PERSONA}" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="nombre_visitante">Nombre del Visitante:</label>
+                                                <input type="text" class="form-control" id="nombre_visitante" name="nombre_visitante" value="${row.NOMBRE_VISITANTE}" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="dni_visitante">DNI del Visitante:</label>
+                                                <input type="text" class="form-control" id="dni_visitante" name="dni_visitante" value="${row.DNI_VISITANTE}" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="num_personas">Número de Personas:</label>
+                                                <input type="number" class="form-control" id="num_personas" name="num_personas" value="${row.NUM_PERSONAS}" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="num_placa">Número de Placa (Opcional):</label>
+                                                <input type="text" class="form-control" id="num_placa" name="num_placa" value="${row.NUM_PLACA}">
+                                            </div>
+                                    
+                                            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                                          </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+                                    
+                                     <!-- Modal de eliminación de visitante -->
                         <div class="modal fade" id="eliminarVisitante${row.ID_VISITANTE}" tabindex="-1" role="dialog" aria-labelledby="eliminarVisitante${row.ID_VISITANTE}Label" aria-hidden="true">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
-                                    <!-- Contenido del modal aquí -->
-                                </div>
-                            </div>
-                        </div>
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="eliminarVisitante${row.ID_VISITANTE}Label">Eliminar Visitante</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>¿Estás seguro de que deseas eliminar al visitante ?</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <form class="eliminar-visitante-form" data-id="${row.ID_VISITANTE}" method="POST">
+                                            @csrf
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                            <button type="submit" class="btn btn-danger">Eliminar</button>
+                                        </form>
+                                    </div>
+                                   
+                                    </div>
+                           
                     `;
                 }
             }
@@ -482,8 +474,8 @@ function permitirSoloNumerosPositivos() {
         });
 
         // AJAX form submission for editing a visitante
-        $('.editar-visitante-form').on('submit', function(event) {
-            event.preventDefault();
+        $(document).on('submit', '.editar-visitante-form', function(event) {
+    event.preventDefault();
 
             var visitanteId = $(this).data('id');
             var formData = new FormData(this);
@@ -522,8 +514,9 @@ function permitirSoloNumerosPositivos() {
         });
 
         // AJAX form submission for deleting a visitante
-        $('.eliminar-visitante-form').on('submit', function(event) {
-            event.preventDefault();
+       $(document).on('submit', '.eliminar-visitante-form', function(event) {
+        event.preventDefault();
+         
 
             var visitanteId = $(this).data('id');
 
