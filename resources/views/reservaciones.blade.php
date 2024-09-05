@@ -51,100 +51,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($reservaciones as $reserva)
-                    <tr>
-                        <td>{{ $reserva["ID_RESERVA"] }}</td>
-                        <td>{{ $reserva["PERSONA"] }}</td>
-                        <td>{{ $reserva["INSTALACION"] }}</td>
-                        <td>{{ $reserva["ESTADO_RESERVA"] }}</td>
-                        <td>{{ $reserva["TIPO_EVENTO"] }}</td>
-                        <td>{{ $reserva["HORA_FECHA"] ? \Carbon\Carbon::parse($reserva["HORA_FECHA"])->format('Y-m-d H:i:s') : '' }}</td>
-                        <td>
-                            <button type="button" class="btn btn-info" data-toggle="modal" data-target="#editarReservacion{{ $reserva['ID_RESERVA'] }}">Editar</button>
-                            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#eliminarReservacion{{ $reserva['ID_RESERVA'] }}">Eliminar</button>
-                        </td>
-                    </tr>
-                    
-                    
-<!-- Modal de edición de reservación -->
-<div class="modal fade" id="editarReservacion{{ $reserva['ID_RESERVA'] }}" tabindex="-1" role="dialog" aria-labelledby="editarReservacion{{ $reserva['ID_RESERVA'] }}Label" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="editarReservacion{{ $reserva['ID_RESERVA'] }}Label">Editar Reservación</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <!-- Formulario de edición de reservación -->
-                <form class="editar-reservacion-form" data-id="{{ $reserva['ID_RESERVA'] }}" method="POST">
-                    @csrf
-                    <div class="form-group">
-                        <label for="persona_descripcion">Nombre del Residente:</label>
-                        <input type="text" class="form-control" id="persona_descripcion" name="persona_descripcion" value="{{ $reserva['PERSONA'] }}" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="id_instalacion">Instalación:</label>
-                        <select class="form-control" id="id_instalacion" name="id_instalacion" required>
-                            @foreach($instalaciones as $instalacion)
-                                <option value="{{ $instalacion->ID_INSTALACION }}"{{ $reserva['ID_INSTALACION'] == $instalacion->ID_INSTALACION ? 'selected' : '' }}>
-                                    {{ $instalacion->NOMBRE_INSTALACION }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="id_estado_reserva">Estado de la Reserva:</label>
-                        <select class="form-control" id="id_estado_reserva" name="id_estado_reserva" required>
-                            @foreach($estadoreservas as $estado)
-                                <option value="{{ $estado->ID_ESTADO_RESERVA }}"{{ $reserva['ID_ESTADO_RESERVA'] == $estado->ID_ESTADO_RESERVA ? 'selected' : '' }}>
-                                    {{ $estado->DESCRIPCION }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="tipo_evento">Tipo de Evento:</label>
-                        <input type="text" class="form-control" id="tipo_evento" name="tipo_evento" value="{{ $reserva['TIPO_EVENTO'] }}" required>
-                    </div>
-                    <div class="form-group">
-                <label for="hora_fecha">Fecha y Hora de la Reserva</label>
-                <input type="text" class="form-control" id="hora_fecha" name="hora_fecha" value="{{ \Carbon\Carbon::parse($reserva['HORA_FECHA'])->format('Y-m-d H:i:s') }}"                        placeholder="Ejemplo de formato 2024-08-26 11:23:20" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Modal de eliminación de reservación -->
-<div class="modal fade" id="eliminarReservacion{{ $reserva['ID_RESERVA'] }}" tabindex="-1" role="dialog" aria-labelledby="eliminarReservacion{{ $reserva['ID_RESERVA'] }}Label" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="eliminarReservacion{{ $reserva['ID_RESERVA'] }}Label">Eliminar Reservación</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p>¿Estás seguro de que deseas eliminar la reservación para "{{ $reserva['ID_PERSONA'] }}"?</p>
-            </div>
-            <div class="modal-footer">
-                <form class="eliminar-reservacion-form" data-id="{{ $reserva['ID_RESERVA'] }}" method="POST">
-                    @csrf
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-danger">Eliminar</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-@endforeach
-
-            </tbody>
+               
         </table>
     </div>
     @else
@@ -153,6 +60,7 @@
             </div>
         @endif
 </div>
+
 
 <!-- Modal para agregar reservación -->
 <div class="modal fade" id="modalAgregarReservacion" tabindex="-1" role="dialog" aria-labelledby="modalAgregarReservacionLabel" aria-hidden="true">
@@ -266,9 +174,83 @@
                     return `
                         <button type="button" class="btn btn-info" data-toggle="modal" data-target="#editarReservacion${row.ID_RESERVA}">Editar</button>
                         <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#eliminarReservacion${row.ID_RESERVA}">Eliminar</button>
-
-                    
-                    `;
+                        
+ <!-- Modal de edición de reservación -->
+        <div class="modal fade" id="editarReservacion${row.ID_RESERVA}" tabindex="-1" role="dialog" aria-labelledby="editarReservacion${row.ID_RESERVA}Label" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editarReservacion${row.ID_RESERVA}Label">Editar Reservación</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Formulario de edición de reservación -->
+                        <form class="editar-reservacion-form" data-id="${row.ID_RESERVA}" method="POST">
+                            @csrf
+                            <div class="form-group">
+                                <label for="persona_descripcion">Nombre del Residente:</label>
+                                <input type="text" class="form-control" id="persona_descripcion" name="persona_descripcion" value="${row.PERSONA}" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="id_instalacion">Instalación:</label>
+                                <select class="form-control" id="id_instalacion" name="id_instalacion" required>
+                                    @foreach($instalaciones as $instalacion)
+                                        <option value="{{ $instalacion->ID_INSTALACION }}"${row.ID_INSTALACION == {{ $instalacion->ID_INSTALACION }} ? 'selected' : ''}>
+                                            {{ $instalacion->NOMBRE_INSTALACION }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="id_estado_reserva">Estado de la Reserva:</label>
+                                <select class="form-control" id="id_estado_reserva" name="id_estado_reserva" required>
+                                    @foreach($estadoreservas as $estado)
+                                        <option value="{{ $estado->ID_ESTADO_RESERVA }}"${row.ID_ESTADO_RESERVA == {{ $estado->ID_ESTADO_RESERVA }} ? 'selected' : ''}>
+                                            {{ $estado->DESCRIPCION }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="tipo_evento">Tipo de Evento:</label>
+                                <input type="text" class="form-control" id="tipo_evento" name="tipo_evento" value="${row.TIPO_EVENTO}" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="hora_fecha">Fecha y Hora de la Reserva:</label>
+                                <input type="text" class="form-control" id="hora_fecha" name="hora_fecha" value="${row.HORA_FECHA}" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+                     <!-- Modal de eliminación de reservación -->
+        <div class="modal fade" id="eliminarReservacion${row.ID_RESERVA}" tabindex="-1" role="dialog" aria-labelledby="eliminarReservacion${row.ID_RESERVA}Label" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="eliminarReservacion${row.ID_RESERVA}Label">Eliminar Reservación</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>¿Estás seguro de que deseas eliminar la reservación para "${row.PERSONA}"?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <form class="eliminar-reservacion-form" data-id="${row.ID_RESERVA}" method="POST">
+                            @csrf
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-danger">Eliminar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+       `;
                 }
             }
         ],
@@ -337,6 +319,7 @@
             // Evitar doble espacio
             input.value = input.value.replace(/ {2,}/g, ' ');
         }
+        
 
         // Asignación de validaciones a los campos de descripción y título
         const descripcionFields = document.querySelectorAll('textarea[name="descripcion"]');
@@ -390,6 +373,9 @@
     });
 }
 
+$(document).on('input', 'input[name="persona_descripcion"], input[name="tipo_evento"]', function() {
+    validarInput(this);
+});
 
         // Función para limitar el tamaño de los caracteres en ciertos campos
         function limitarTamañoCaracteres() {
@@ -453,79 +439,80 @@
         });
 
         // AJAX form submission for editing a reserva
-        $('.editar-reservacion-form').on('submit', function(event) {
-            event.preventDefault();
-            var reservaId = $(this).data('id');
-            var formData = new FormData(this);
-            $.ajax({
-                url: '{{ route("reservaciones.actualizar", "") }}/' + reservaId,
-                method: 'POST',
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function(response) {
-                    if (response.success) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Éxito',
-                            text: response.success,
-                        }).then(() => {
-                            location.reload();
-                        });
-                    } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: response.error,
-                        });
-                    }
-                },
-                error: function(xhr, status, error) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: xhr.responseText,
-                    });
-                }
+$(document).on('submit', '.editar-reservacion-form', function(event) {
+    event.preventDefault();
+    var reservaId = $(this).data('id');
+    var formData = new FormData(this);
+    $.ajax({
+        url: '{{ route("reservaciones.actualizar", "") }}/' + reservaId,
+        method: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(response) {
+            if (response.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Éxito',
+                    text: response.success,
+                }).then(() => {
+                    location.reload();
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: response.error,
+                });
+            }
+        },
+        error: function(xhr, status, error) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: xhr.responseText,
             });
-        });
+        }
+    });
+});
+
 
         // AJAX form submission for deleting a reserva
-        $('.eliminar-reservacion-form').on('submit', function(event) {
-            event.preventDefault();
-            var reservaId = $(this).data('id');
-            $.ajax({
-                url: '{{ route("reservaciones.eliminar", "") }}/' + reservaId,
-                method: 'POST',
-                data: {
-                    _token: '{{ csrf_token() }}',
-                },
-                success: function(response) {
-                    if (response.success) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Éxito',
-                            text: response.success,
-                        }).then(() => {
-                            location.reload();
-                        });
-                    } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: response.error,
-                        });
-                    }
-                },
-                error: function(xhr, status, error) {
+       $(document).on('submit', '.eliminar-reservacion-form', function(event) {
+        event.preventDefault();
+        var reservaId = $(this).data('id');
+        $.ajax({
+            url: '{{ route("reservaciones.eliminar", "") }}/' + reservaId,
+            method: 'POST',
+            data: {
+                _token: '{{ csrf_token() }}',
+            },
+            success: function(response) {
+                if (response.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Éxito',
+                        text: response.success,
+                    }).then(() => {
+                        location.reload();
+                    });
+                } else {
                     Swal.fire({
                         icon: 'error',
                         title: 'Error',
-                        text: xhr.responseText,
+                        text: response.error,
                     });
                 }
-            });
+            },
+            error: function(xhr, status, error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: xhr.responseText,
+                });
+            }
         });
+    });
 
         // Evento para generar reporte
         document.getElementById('generarReporteBtn').addEventListener('click', function() {
