@@ -28,7 +28,7 @@
             <div class="card-tools">
                 <div class="d-flex justify-content-end">
                     <button class="btn btn-primary mr-2" data-toggle="modal" data-target="#nuevaVisitaModal">Nuevo</button>
-                    <form id="reporteForm" method="GET" action="{{ route('bitacora.reporte') }}" target="_blank">
+                     <form id="reporteForm" method="GET" action="{{ route('bitacora.reporte') }}" target="_blank">
                     <input type="hidden" name="nombre" id="searchInput">
                     <button type="submit" class="btn btn-success mt-2">Generar Reporte</button>
                 </form>
@@ -53,90 +53,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($bitacoraVisitas as $visita)
-                        <tr>
-                            <td>{{ $visita["ID_BITACORA_VISITA"] }}</td>
-                            <td>{{ $visita["PERSONA"] }}</td>
-                            <td>{{ $visita["VISITANTE"] }}</td>
-                            <td>{{ $visita["VISITANTE_RECURRENTE"] }}</td>
-                            <td>{{ $visita["NUM_PERSONA"] }}</td>
-                            <td>{{ $visita["NUM_PLACA"] }}</td>
-                            <td>{{ $visita["FECHA_HORA"] ? \Carbon\Carbon::parse($visita["FECHA_HORA"])->format('Y-m-d H:i:s') : '' }}</td>
-                            <td>
-                                <button type="button" class="btn btn-info" data-toggle="modal" data-target="#editarVisitaModal{{ $visita['ID_BITACORA_VISITA'] }}">Editar</button>
-                                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#eliminarVisitaModal{{ $visita['ID_BITACORA_VISITA'] }}">Eliminar</button>
-                            </td>
-                        </tr>
-
-                        <!-- Modal de editar visita -->
-                       <div class="modal fade" id="editarVisitaModal{{ $visita['ID_BITACORA_VISITA'] }}" tabindex="-1" role="dialog" aria-labelledby="editarVisitaModalLabel{{ $visita['ID_BITACORA_VISITA'] }}" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="editarVisitaModalLabel{{ $visita['ID_BITACORA_VISITA'] }}">Editar Bitácora de Visita</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form class="editar-visita-form" data-id="{{ $visita['ID_BITACORA_VISITA'] }}">
-                    @csrf
-                    <div class="form-group">
-                        <label for="persona_descripcion">Residente:</label>
-                        <input type="text" class="form-control" id="persona_descripcion" name="persona_descripcion" value="{{ $visita['PERSONA'] }}" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="visita_descripcion">Visitante:</label>
-                        <input type="text" class="form-control" id="visita_descripcion" name="visita_descripcion" value="{{ $visita['VISITANTE'] }}">
-                    </div>
-                    <div class="form-group">
-                        <label for="visita_recurrente_descripcion">Visitante Recurrente:</label>
-                        <input type="text" class="form-control" id="visita_recurrente_descripcion" name="visita_recurrente_descripcion" value="{{ $visita['VISITANTE_RECURRENTE'] }}">
-                    </div>
-                    <div class="form-group">
-                        <label for="num_persona">Número de Persona:</label>
-                        <input type="text" class="form-control" id="num_persona" name="num_persona" value="{{ $visita['NUM_PERSONA'] }}" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="num_placa">Número de Placa:</label>
-                        <input type="text" class="form-control" id="num_placa" name="num_placa" value="{{ $visita['NUM_PLACA'] }}">
-                    </div>
-                    <button type="submit" class="btn btn-primary">Guardar</button>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                                </div>
-                                </div>
-                            </div>
-                        </div>
-
-
-                        <!-- Modal de eliminar visita -->
-                        <div class="modal fade" id="eliminarVisitaModal{{ $visita['ID_BITACORA_VISITA'] }}" tabindex="-1" role="dialog" aria-labelledby="eliminarVisitaModalLabel{{ $visita['ID_BITACORA_VISITA'] }}" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="eliminarVisitaModalLabel{{ $visita['ID_BITACORA_VISITA'] }}">Eliminar Bitácora de Visita</h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <p>¿Estás seguro de que deseas eliminar esta bitácora de visita?</p>
-                                        <form class="eliminar-visita-form" data-id="{{ $visita['ID_BITACORA_VISITA'] }}">
-                                            @csrf
-                                            <button type="submit" class="btn btn-danger">Eliminar</button>
-                                        </form>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    @endforeach
-                </tbody>
+                  
             </table>
         </div>
         @else
@@ -228,34 +145,103 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 $(document).ready(function() {
-    $('#bitacora-table').DataTable({
-        processing: true,
-        serverSide: true,
-        ajax: {
-            url: "{{ route('fetch.bitacora.visita') }}",
-            type: 'GET',
+    $('#bitacora-table').DataTable({ 
+        "processing": true,
+            "serverSide": true,
+            "ajax": {
+            "url": "{{ route('fetch.bitacora.visita') }}",
+            "type": "GET"
         },
-        columns: [
-            { data: 'ID_BITACORA_VISITA', name: 'ID_BITACORA_VISITA' },
-            { data: 'PERSONA', name: 'PERSONA' },
-            { data: 'VISITANTE', name: 'VISITANTE' },
-            { data: 'VISITANTE_RECURRENTE', name: 'VISITANTE_RECURRENTE' },
-            { data: 'NUM_PERSONA', name: 'NUM_PERSONA' },
-            { data: 'NUM_PLACA', name: 'NUM_PLACA' },
-            { data: 'FECHA_HORA', name: 'FECHA_HORA' },
-               {
-            data: null,
-            name: 'ACCIONES',
-            orderable: false,
-            searchable: false,
-            render: function (data, type, row) {
-                return `
-                    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#editarVisitaModal${row.ID_BITACORA_VISITA}">Editar</button>
-                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#eliminarVisitaModall${row.ID_BITACORA_VISITA}">Eliminar</button>
-                `;
+        "columns": [
+            { "data": "ID_BITACORA_VISITA" },
+            { "data": "PERSONA" },
+            { "data": "VISITANTE" },
+            { "data": "VISITANTE_RECURRENTE" },
+            { "data": "NUM_PERSONA" },
+            { "data": "NUM_PLACA" },
+            { "data": "FECHA_HORA" },                    
+            {
+                "data": null,
+                "orderable": false,
+                "searchable": false,
+                
+         "render": function(data, type, row) {
+                    return `
+                        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#editarVisitaModal${row.ID_BITACORA_VISITA}">Editar</button>
+                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#eliminarVisitaModal${row.ID_BITACORA_VISITA}">Eliminar</button>
+
+                        <!-- Modal de editar visita -->
+                       <div class="modal fade" id="editarVisitaModal${row.ID_BITACORA_VISITA}" tabindex="-1" role="dialog" aria-labelledby="editarVisitaModalLabel${row.ID_BITACORA_VISITA}" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editarVisitaModalLabel${row.ID_BITACORA_VISITA}">Editar Bitácora de Visita</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                    <form id="editarVisitaform" class="editarVisitaform" data-id="${row.ID_BITACORA_VISITA}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    <div class="form-group">
+                        <label for="persona_descripcion">Residente:</label>
+                        <input type="text" class="form-control" id="persona_descripcion" name="persona_descripcion" value="${row.PERSONA}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="visita_descripcion">Visitante:</label>
+                        <input type="text" class="form-control" id="visita_descripcion" name="visita_descripcion" value="${row.VISITANTE}">
+                    </div>
+                    <div class="form-group">
+                        <label for="visita_recurrente_descripcion">Visitante Recurrente:</label>
+                        <input type="text" class="form-control" id="visita_recurrente_descripcion" name="visita_recurrente_descripcion" value="${row.VISITANTE_RECURRENTE}">
+                    </div>
+                    <div class="form-group">
+                        <label for="num_persona">Número de Persona:</label>
+                        <input type="text" class="form-control" id="num_persona" name="num_persona" value="${row.NUM_PERSONA}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="num_placa">Número de Placa:</label>
+                        <input type="text" class="form-control" id="num_placa" name="num_placa" value="${row.NUM_PLACA}">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                                </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <!-- Modal de eliminar visita -->
+                        <div class="modal fade" id="eliminarVisitaModal${row.ID_BITACORA_VISITA}" tabindex="-1" role="dialog" aria-labelledby="eliminarVisitaModalLabel${row.ID_BITACORA_VISITA}" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="eliminarVisitaModalLabel${row.ID_BITACORA_VISITA}">Eliminar Bitácora de Visita</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>¿Estás seguro de que deseas eliminar esta bitácora de visita?</p>
+                                        <form class="eliminar-visita-form" data-id="${row.ID_BITACORA_VISITA}">
+                                            @csrf
+                                            <button type="submit" class="btn btn-danger">Eliminar</button>
+                                        </form>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    
+                    `;
+                }
             }
-        }
-    ],
+        ],
 
             "language": {
                 "lengthMenu": "Mostrar _MENU_ registros por página",
@@ -298,18 +284,16 @@ $(document).ready(function() {
             ]
         });
 
-        // Captura y manejo de búsqueda en DataTables
-    table.on('search.dt', function() {
-    var searchValue = table.search();  // Captura el valor de búsqueda actual
-    console.log("Valor de búsqueda capturado: " + searchValue);  // Verifica el valor
-    $('#searchInput').val(searchValue);  // Asigna el valor al campo oculto del formulario
-});
-
-// Verifica el valor antes de enviar el formulario
-$('#reporteForm').on('submit', function(e) {
-    var searchValue = $('#searchInput').val();
-    console.log("Valor enviado para el reporte: " + searchValue);  // Verifica el valor antes de enviar el formulario
-});
+      // Captura y manejo de búsqueda en DataTables
+        table.on('search.dt', function() {
+            var searchValue = table.search();
+            $('#searchInput').val(searchValue); // Asigna el valor al campo oculto del formulario
+        });
+          // Verifica el valor antes de enviar el formulario
+    $('#reporteForm').on('submit', function(e) {
+        var searchValue = $('#searchInput').val();
+        console.log("Valor enviado para el reporte: " + searchValue);  // Verifica el valor antes de enviar el formulario
+    });
 
 // Validar más de 3 letras repetidas y doble espacio en el campo de descripción
 function validarInput(input) {
@@ -468,14 +452,14 @@ function permitirSoloNumerosPositivos() {
         });
 
         // AJAX form submission for editing a bitácora de visita
-        $('.editar-visita-form').on('submit', function(event) {
+      $(document).on('submit', '.editarVisitaform', function(event) {
             event.preventDefault();
 
-            var visitaId = $(this).data('id');
+            var id = $(this).data('id');
             var formData = new FormData(this);
 
             $.ajax({
-                url: '{{ route("bitacora.actualizar", "") }}/' + visitaId,
+                url: '{{ route("bitacora.actualizar", ":id") }}'.replace(':id', id),
                 method: 'POST',
                 data: formData,
                 processData: false,
@@ -508,7 +492,7 @@ function permitirSoloNumerosPositivos() {
         });
 
         // AJAX form submission for deleting a bitácora de visita
-        $('.eliminar-visita-form').on('submit', function(event) {
+       $(document).on('submit', '.eliminar-visita-form', function(event) {
             event.preventDefault();
 
             var visitaId = $(this).data('id');
