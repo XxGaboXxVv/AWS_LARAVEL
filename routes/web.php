@@ -202,7 +202,7 @@ Route::middleware([App\Http\Middleware\LogPageChanges::class])->group(function (
     Route::get('/BitacoraVisita', [BitacoraVisita::class, 'bitacora'])->name('BitacoraVisita')->middleware('auth');
     route::get('/fetch-bitacora-visita', [BitacoraVisita::class, 'fetchBitacoraVisita'])->name('fetch.bitacora.visita');
     Route::post('/bitacora/guardar', [BitacoraVisita::class, 'crear'])->name('bitacora.guardar')->middleware(middleware:'auth');;
-    Route::post('/bitacora/actualizar/{id}', [BitacoraVisita::class, 'actualizar'])->name('bitacora.actualizar')->middleware(middleware:'auth');;
+    Route::post('/bitacora/actualizar/{id}', [BitacoraVisita::class, 'actualizar'])->name('bitacora.actualizar')->middleware('auth');
     Route::post('/bitacora/eliminar/{id}', [BitacoraVisita::class, 'eliminar'])->name('bitacora.eliminar')->middleware(middleware:'auth');;
     Route::get('/reporte-bitacora', [BitacoraVisita::class, 'generarReporte'])->name('bitacora.reporte')->middleware(middleware:'auth');;
 });
