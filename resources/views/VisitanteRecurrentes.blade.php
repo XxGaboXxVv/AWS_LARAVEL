@@ -42,95 +42,6 @@
             </tr>
         </thead>
         <tbody>
-            @foreach($visitantesRecurrentesData as $recurrente)
-                <tr>
-                    <td>{{ $recurrente['ID_VISITANTES_RECURRENTES'] }}</td>
-                    <td>{{ $recurrente['PERSONA'] }}</td>
-                    <td>{{ $recurrente['NOMBRE_VISITANTE'] }}</td>
-                    <td>{{ $recurrente['DNI_VISITANTE'] }}</td>
-                    <td>{{ $recurrente['NUM_PERSONAS'] }}</td>
-                    <td>{{ $recurrente['NUM_PLACA'] }}</td>
-                    <td>{{ $recurrente['FECHA_HORA'] ? \Carbon\Carbon::parse($recurrente['FECHA_HORA'])->format('Y-m-d h:i:s') : '' }}</td>
-                    <td>{{ $recurrente['FECHA_VENCIMIENTO'] ? \Carbon\Carbon::parse($recurrente['FECHA_VENCIMIENTO'])->format('Y-m-d h:i:s') : '' }}</td>
-                    <td>
-                        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#editarVisitanteRecurrenteModal{{ $recurrente['ID_VISITANTES_RECURRENTES'] }}">Editar</button>
-                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#eliminarVisitanteRecurrenteModal{{ $recurrente['ID_VISITANTES_RECURRENTES'] }}">Eliminar</button>
-                    </td>
-                </tr>
-
-                <!-- Modal de editar visitante recurrente -->
-                <div class="modal fade" id="editarVisitanteRecurrenteModal{{ $recurrente['ID_VISITANTES_RECURRENTES'] }}" tabindex="-1" role="dialog" aria-labelledby="editarVisitanteRecurrenteModalLabel{{ $recurrente['ID_VISITANTES_RECURRENTES'] }}" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="editarVisitanteRecurrenteModalLabel{{ $recurrente['ID_VISITANTES_RECURRENTES'] }}">Editar Visitante Recurrente</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <form class="editar-visitante-recurrente-form" data-id="{{ $recurrente['ID_VISITANTES_RECURRENTES'] }}">
-                                    @csrf
-                                    <div class="form-group">
-                                        <label for="persona_descripcion">Nombre del Residente:</label>
-                                        <input type="text" class="form-control" id="persona_descripcion" name="persona_descripcion" value="{{ $recurrente['PERSONA'] }}" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="nombre_visitante">Nombre Visitante:</label>
-                                        <input type="text" class="form-control" id="nombre_visitante" name="nombre_visitante" value="{{ $recurrente['NOMBRE_VISITANTE'] }}" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="dni_visitante">DNI Visitante:</label>
-                                        <input type="text" class="form-control" id="dni_visitante" name="dni_visitante" value="{{ $recurrente['DNI_VISITANTE'] }}" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="num_personas">Número de Personas:</label>
-                                        <input type="text" class="form-control" id="num_personas" name="num_personas" value="{{ $recurrente['NUM_PERSONAS'] }}" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="num_placa">Número de Placa:</label>
-                                        <input type="text" class="form-control" id="num_placa" name="num_placa" value="{{ $recurrente['NUM_PLACA'] }}" >
-                                    </div>
-                                      <div class="form-group">
-                            <label for="hora_fecha">Fecha de Vencimiento</label>
-                    <input type="text" class="form-control" id="fecha_vencimiento" name="fecha_vencimiento"
-                    value="{{ \Carbon\Carbon::parse($recurrente['FECHA_VENCIMIENTO'])->format('Y-m-d H:i:s') }}"placeholder="Ejemplo de formato 2024-08-26 11:23:20" required>
-                                </div>
-                                    <button type="submit" class="btn btn-primary">Guardar</button>
-                                </form>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Modal de eliminar visitante recurrente -->
-                <div class="modal fade" id="eliminarVisitanteRecurrenteModal{{ $recurrente['ID_VISITANTES_RECURRENTES'] }}" tabindex="-1" role="dialog" aria-labelledby="eliminarVisitanteRecurrenteModalLabel{{ $recurrente['ID_VISITANTES_RECURRENTES'] }}" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="eliminarVisitanteRecurrenteModalLabel{{ $recurrente['ID_VISITANTES_RECURRENTES'] }}">Eliminar Visitante Recurrente</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                            <p>¿Estás seguro de que deseas eliminar este visitante recurrente "{{ $recurrente['ID_VISITANTES_RECURRENTES'] }}"?</p>
-                           </div>
-                          <div class="modal-footer">
-                          <form class="eliminar-visitante-recurrente-form" data-id="{{ $recurrente['ID_VISITANTES_RECURRENTES'] }}" method="POST">
-                               @csrf
-                              <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                              <button type="submit" class="btn btn-danger">Eliminar</button>
-                                </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    @endforeach
-                </tbody>
             </table>
         </div>
     </div>
@@ -251,7 +162,78 @@
                     return `
                         <button type="button" class="btn btn-info" data-toggle="modal" data-target="#editarVisitanteRecurrenteModal${row.ID_VISITANTES_RECURRENTES}">Editar</button>
                         <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#eliminarVisitanteRecurrenteModal${row.ID_VISITANTES_RECURRENTES}">Eliminar</button>
+                        
+            <!-- Modal de editar visitante recurrente -->
+                <div class="modal fade" id="editarVisitanteRecurrenteModal${row.ID_VISITANTES_RECURRENTES}" tabindex="-1" role="dialog" aria-labelledby="editarVisitanteRecurrenteModalLabel${row.ID_VISITANTES_RECURRENTES}" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="editarVisitanteRecurrenteModalLabel${row.ID_VISITANTES_RECURRENTES}">Editar Visitante Recurrente</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form class="editar-visitante-recurrente-form" data-id="${row.ID_VISITANTES_RECURRENTES}">
+                                    @csrf
+                                    <div class="form-group">
+                                        <label for="persona_descripcion">Nombre del Residente:</label>
+                                        <input type="text" class="form-control" id="persona_descripcion" name="persona_descripcion" value="${row.PERSONA}" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="nombre_visitante">Nombre Visitante:</label>
+                                        <input type="text" class="form-control" id="nombre_visitante" name="nombre_visitante" value="${row.NOMBRE_VISITANTE}" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="dni_visitante">DNI Visitante:</label>
+                                        <input type="text" class="form-control" id="dni_visitante" name="dni_visitante" value="${row.DNI_VISITANTE}" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="num_personas">Número de Personas:</label>
+                                        <input type="text" class="form-control" id="num_personas" name="num_personas" value="${row.NUM_PERSONAS}" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="num_placa">Número de Placa:</label>
+                                        <input type="text" class="form-control" id="num_placa" name="num_placa" value="${row.NUM_PLACA}" >
+                                    </div>
+                                      <div class="form-group">
+                            <label for="hora_fecha">Fecha de Vencimiento</label>
+                    <input type="text" class="form-control" id="fecha_vencimiento" name="fecha_vencimiento"
+                    value="${row.FECHA_VENCIMIENTO}"placeholder="Ejemplo de formato 2024-08-26 11:23:20" required>
+                                </div>
+                                    <button type="submit" class="btn btn-primary">Guardar</button>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
+                <!-- Modal de eliminar visitante recurrente -->
+                <div class="modal fade" id="eliminarVisitanteRecurrenteModal${row.ID_VISITANTES_RECURRENTES}" tabindex="-1" role="dialog" aria-labelledby="eliminarVisitanteRecurrenteModalLabel${row.ID_VISITANTES_RECURRENTES}" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="eliminarVisitanteRecurrenteModalLabel${row.ID_VISITANTES_RECURRENTES}">Eliminar Visitante Recurrente</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                            <p>¿Estás seguro de que deseas eliminar este visitante recurrente "${row.ID_VISITANTES_RECURRENTES}"?</p>
+                           </div>
+                          <div class="modal-footer">
+                          <form class="eliminar-visitante-recurrente-form" data-id="${row.ID_VISITANTES_RECURRENTES}" method="POST">
+                               @csrf
+                              <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                              <button type="submit" class="btn btn-danger">Eliminar</button>
+                                </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     
                     `;
                 }
@@ -485,7 +467,7 @@ function permitirSoloNumerosPositivos() {
         });
 
             // AJAX form submission for editing a visitantes recurrentes
-            $('.editar-visitante-recurrente-form').on('submit', function(event) {
+            $(document).on('submit', '.editar-visitante-recurrente-form', function(event) {
             event.preventDefault();
 
             var recurrenteId = $(this).data('id');
@@ -525,7 +507,7 @@ function permitirSoloNumerosPositivos() {
         });
        
             // AJAX form submission for deleting a visitantes recurrentes
-           $('.eliminar-visitante-recurrente-form').on('submit', function(event) {
+         $(document).on('submit', '.eliminar-visitante-recurrente-form', function(event) {
             event.preventDefault();
 
             var recurrenteId = $(this).data('id');
