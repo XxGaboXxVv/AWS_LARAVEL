@@ -68,11 +68,11 @@ class BitacoraVisita extends Controller
     $visitantes = $this->getVisitantes();
     $visitantesRecurrentes = $this->getVisitantesRecurrentes();
 
-    // Reemplazar IDs con nombres
-    foreach ($bitacoraVisitas as &$visita) {
-        $visita['PERSONA'] = $personas->firstWhere('ID_PERSONA', $visita['ID_PERSONA'])->NOMBRE_PERSONA ?? $visita['ID_PERSONA'];
-        $visita['VISITANTE'] = $visitantes->firstWhere('ID_VISITANTE', $visita['ID_VISITANTE'])->NOMBRE_VISITANTE ?? $visita['ID_VISITANTE'];
-        $visita['VISITANTE_RECURRENTE'] = $visitantesRecurrentes->firstWhere('ID_VISITANTES_RECURRENTES', $visita['ID_VISITANTES_RECURRENTES'])->NOMBRE_VISITANTE ?? $visita['ID_VISITANTES_RECURRENTES'];
+     foreach ($bitacoraVisitas as &$visita) {
+            $visita['PERSONA'] = $personas->firstWhere('ID_PERSONA', $visita['ID_PERSONA'])->NOMBRE_PERSONA ?? '';
+            $visita['VISITANTE'] = $visitantes->firstWhere('ID_VISITANTE', $visita['ID_VISITANTE'])->NOMBRE_VISITANTE ?? '';
+            $visita['VISITANTE_RECURRENTE'] = $visitantesRecurrentes->firstWhere('ID_VISITANTES_RECURRENTES', $visita['ID_VISITANTES_RECURRENTES'])->NOMBRE_VISITANTE ?? '';
+
         
         if (!empty($visita['FECHA_HORA'])) {
             $visita['FECHA_HORA'] = \Carbon\Carbon::parse($visita['FECHA_HORA'])->setTimezone('America/Tegucigalpa')->format('Y-m-d H:i:s');
@@ -353,7 +353,6 @@ public function getVisitantesRecurrentes()
     }
 
     if ($response->successful()) {
-      if (!empty($query)) {
          $bitacoraVisitas = array_filter($bitacoraVisitas, function($visita) use ($query) {
             $matchResidente = stripos($visita['PERSONA'], $query) !== false;
             $matchFecha = stripos(\Carbon\Carbon::parse($visita['FECHA_HORA'])->format('Y-m-d H:i:s'), $query) !== false;
@@ -361,7 +360,7 @@ public function getVisitantesRecurrentes()
             return $matchResidente || $matchFecha;
         });
 
-        }
+        
         // Generar el PDF
         $pdf = Pdf::loadView('reportes.BitacoraVisitas', compact('bitacoraVisitas', 'personas', 'visitantes','visitantesRecurrentes'));
         return $pdf->stream('reporte_BitacoraVisitas.pdf');
