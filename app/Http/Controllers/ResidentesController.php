@@ -256,17 +256,17 @@ public function editar(Request $request, $id)
         'ID_TIPO_PERSONA' => 'required|integer',
         'id_parentesco' => 'required|integer',
         'condominio_descripcion' => 'required|string|max:255',
-        'id_padre' => 'nullable|integer',
     ]);
 
     // Verificar si el nuevo condominio existe
-    $condominio = DB::table('TBL_CONDOMINIOS')
-        ->where('DESCRIPCION', strtoupper($data['condominio_descripcion']))
-        ->first();
+  $condominio = DB::table('TBL_CONDOMINIOS')
+    ->where('ID_CONDOMINIO', $data['condominio_descripcion'])
+    ->first();
 
-    if (!$condominio) {
-        return response()->json(['error' => 'El condominio no existe.'], 400);
-    }
+if (!$condominio) {
+    return response()->json(['error' => 'El condominio no existe.'], 400);
+}
+
 
     // Obtener y actualizar los datos del contacto
     $contactoId = $residenteActual['ID_CONTACTO'];
@@ -311,7 +311,6 @@ public function editar(Request $request, $id)
         'P_ID_ESTADO_PERSONA' => $data['id_estado_persona'],
         'P_ID_TIPO_PERSONA' => $data['ID_TIPO_PERSONA'],
         'P_ID_PARENTESCO' => $data['id_parentesco'],
-        'P_ID_PADRE' => $data['id_padre'],
         'P_ID_CONDOMINIO' => $condominio->ID_CONDOMINIO,  // Usar el ID del condominio existente
     ];
 
@@ -327,7 +326,6 @@ public function editar(Request $request, $id)
         'P_ID_ESTADO_PERSONA' => $residenteActual['ID_ESTADO_PERSONA'],
         'P_ID_TIPO_PERSONA' => $residenteActual['ID_TIPO_PERSONA'],
         'P_ID_PARENTESCO' => $residenteActual['ID_PARENTESCO'],
-        'P_ID_PADRE' => $residenteActual['ID_PADRE'],
         'P_DESCRIPCION_CONTACTO' => $contactoActual['DESCRIPCION'],
         'P_TIPO_CONTACTO' => $contactoActual['ID_TIPO_CONTACTO'],
         'P_DESCRIPCION_CONDOMINIO' => $condominioActual['DESCRIPCION'],
@@ -340,7 +338,6 @@ public function editar(Request $request, $id)
         'P_ID_ESTADO_PERSONA' => $data['id_estado_persona'],
         'P_ID_TIPO_PERSONA' => $data['ID_TIPO_PERSONA'],
         'P_ID_PARENTESCO' => $data['id_parentesco'],
-        'P_ID_PADRE' => $data['id_padre'],
         'P_DESCRIPCION_CONTACTO' => $data['contacto_descripcion'],
         'P_TIPO_CONTACTO' => $data['id_tipo_contacto'],
         'P_DESCRIPCION_CONDOMINIO' => $data['condominio_descripcion']
