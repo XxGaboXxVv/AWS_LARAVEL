@@ -77,14 +77,14 @@ class UsuarioController extends Controller
 
      return view('usuarios', compact('Usuarios', 'roles', 'estadosUsuario', 'diasVencimiento','hasPermission'));
  } else {
-     return view('error')->withErrors('Error al obtener la lista de Usuarios.');
+     return view('usuarios')->withErrors('Error al obtener la lista de Usuarios.');
  }
 }
 public function fetchUsuarios(Request $request)
 {
-    $start = $request->input('start', 0);
-    $length = $request->input('length', 10);
-    $search = $request->input('search.value', '');
+    $start = $request->input('start');
+    $length = $request->input('length');
+    $search = $request->input('search.value');
 
     $baseUrl = Config::get('api.base_url');
     $response = Http::get($baseUrl . '/SEL_USUARIO');
@@ -500,68 +500,67 @@ public function fetchUsuarios(Request $request)
  
     
 
-    public function generarPassword($id)
-    {
-        // Verificar si el usuario es el superadmin
-        if ($id == 1) {
-            session()->flash('error', 'No se puede editar el superadministrador.');
-            return redirect()->route('Usuarios');
-        }
-    
-        try {
-            $this->authorize('update', User::class);
-        } catch (AuthorizationException $e) {
-            return $this->handleAuthorizationException($e);
-        }
-    
-        $usuario = User::findOrFail($id);
-        
-        // Guardar los datos antiguos para la bitácora
-        $oldData = $usuario->toArray();
-    
-        // Generar una nueva contraseña aleatoria
-        $nuevaContraseña = Str::random(12);
-    
-        // Encriptar la nueva contraseña
-        $usuario->CONTRASEÑA = Hash::make($nuevaContraseña);
-    
-        // Generar el secreto 2FA
-        $google2fa = app('pragmarx.google2fa');
-        $google2fa_secret = $google2fa->generateSecretKey();
-        $usuario->google2fa_secret = $google2fa_secret;
-    
-        // Consulta el parámetro de fecha de vencimiento
-        $parametroFechaVencimiento = DB::table('TBL_MS_PARAMETROS')
-            ->where('PARAMETRO', 'FECHA_VENCIMIENTO')
-            ->value('VALOR');
-    
-        // Si no se encuentra el parámetro, se usa un valor por defecto (ejemplo: 90 días)
-        $diasVencimiento = $parametroFechaVencimiento ? intval($parametroFechaVencimiento) : 90;
-    
-        // Actualizar la fecha de vencimiento
-        $date = new DateTime('now', new DateTimeZone('America/Tegucigalpa'));
-        $fechaVencimiento = $date->modify("+$diasVencimiento days")->format('Y-m-d H:i:s');
-        $usuario->FECHA_VENCIMIENTO = $fechaVencimiento;
-    
-    // Generar el token de restablecimiento
-     $token = $this->generateResetToken($usuario->EMAIL);
-
-        // Guardar la nueva contraseña y la fecha de vencimiento en la base de datos
-        $usuario->save();
-        
-    
-        $details = [
-            'link' => route('register.2fa', ['id_usuario' => $usuario['ID_USUARIO']])
-        ];
-    
-        // Enviar correo al usuario con la nueva contraseña
-        Mail::to($usuario->EMAIL)->send(new \App\Mail\NewPasswordMail($nuevaContraseña, $details));
-    
-        // Loguear la actividad, indicando que la contraseña ha sido actualizada
-        $this->logActivity('usuario ' . $usuario->NOMBRE_USUARIO, 'put', ['CONTRASEÑA' => 'actualizada'], $oldData);
-        session()->flash('success', 'Nueva contraseña generada y enviada por correo al usuario.');
-        return redirect()->back();
+   public function generarPassword($id)
+{
+    // Verificar si el usuario es el superadmin
+    if ($id == 1) {
+        return response()->json(['error' => 'No se puede editar el superadministrador.']);
     }
+
+    try {
+        $this->authorize('update', User::class);
+    } catch (AuthorizationException $e) {
+        return response()->json(['error' => 'No tienes permisos para actualizar este usuario.']);
+    }
+
+    $usuario = User::findOrFail($id);
+    
+    // Guardar los datos antiguos para la bitácora
+    $oldData = $usuario->toArray();
+
+    // Generar una nueva contraseña aleatoria
+    $nuevaContraseña = Str::random(12);
+
+    // Encriptar la nueva contraseña
+    $usuario->CONTRASEÑA = Hash::make($nuevaContraseña);
+
+    // Generar el secreto 2FA
+    $google2fa = app('pragmarx.google2fa');
+    $google2fa_secret = $google2fa->generateSecretKey();
+    $usuario->google2fa_secret = $google2fa_secret;
+
+    // Consulta el parámetro de fecha de vencimiento
+    $parametroFechaVencimiento = DB::table('TBL_MS_PARAMETROS')
+        ->where('PARAMETRO', 'FECHA_VENCIMIENTO')
+        ->value('VALOR');
+
+    // Si no se encuentra el parámetro, se usa un valor por defecto (ejemplo: 90 días)
+    $diasVencimiento = $parametroFechaVencimiento ? intval($parametroFechaVencimiento) : 90;
+
+    // Actualizar la fecha de vencimiento
+    $date = new DateTime('now', new DateTimeZone('America/Tegucigalpa'));
+    $fechaVencimiento = $date->modify("+$diasVencimiento days")->format('Y-m-d H:i:s');
+    $usuario->FECHA_VENCIMIENTO = $fechaVencimiento;
+
+    // Generar el token de restablecimiento
+    $token = $this->generateResetToken($usuario->EMAIL);
+
+    // Guardar la nueva contraseña y la fecha de vencimiento en la base de datos
+    $usuario->save();
+    
+    $details = [
+        'link' => route('register.2fa', ['id_usuario' => $usuario['ID_USUARIO']])
+    ];
+
+    // Enviar correo al usuario con la nueva contraseña
+    Mail::to($usuario->EMAIL)->send(new \App\Mail\NewPasswordMail($nuevaContraseña, $details));
+
+    // Loguear la actividad, indicando que la contraseña ha sido actualizada
+    $this->logActivity('usuario ' . $usuario->NOMBRE_USUARIO, 'put', ['CONTRASEÑA' => 'actualizada'], $oldData);
+    
+    return response()->json(['success' => 'Nueva contraseña generada y enviada por correo al usuario.']);
+}
+
     
     public function eliminar(Request $request)
     {
