@@ -58,171 +58,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($Residentes as $residente)
-                            <tr>
-                                <td>{{ $residente["ID_PERSONA"] }}</td>
-                                <td>{{ $residente["NOMBRE_PERSONA"] }}</td>
-                                <td>{{ $residente["DNI_PERSONA"] }}</td>
-                                <td>{{ $residente["TIPO_CONTACTO"] }}</td>
-                                <td>{{ $residente["CONTACTO"] }}</td>
-                                <td>{{ $residente["ESTADO_PERSONA"] }}</td>
-                                <td>{{ $residente["CONDOMINIO"] }}</td>
 
-                                <td>
-                                    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#editarResidente{{ $residente['ID_PERSONA'] }}">Editar</button>
-                                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#eliminarResidente{{ $residente['ID_PERSONA'] }}">Eliminar</button>
-                                    <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#mostrarMas{{ $residente['ID_PERSONA'] }}">Mostrar Mas</button>
-
-                                </td>
-                            </tr>
-                            <!-- Modal de "Mostrar más" -->
-                            <div class="modal fade" id="mostrarMas{{ $residente['ID_PERSONA'] }}" tabindex="-1" role="dialog" aria-labelledby="mostrarMas{{ $residente['ID_PERSONA'] }}Label" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="mostrarMas{{ $residente['ID_PERSONA'] }}Label">Detalles del Usuario</h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <p>ID DEL RESIDENTE: {{ $residente["ID_PERSONA"] }}</p>
-                                        <p>NOMBRE DEL RESIDENTE: {{ $residente["NOMBRE_PERSONA"] }}</p>
-                                        <p>DNI DEL RESIDENTE: {{ $residente["DNI_PERSONA"] }}</p>
-                                        <p>TIPO DE CONTACTO DEL RESIDENTE:{{ $residente["TIPO_CONTACTO"] }}</p>
-                                        <p>CONTACTO DEL RESIDENTE: {{ $residente["CONTACTO"] }}</p>
-                                        <p>TIPO DE RESIDENTE: {{ $residente["TIPO_PERSONA"]  }}</p>
-                                         <p>CONDOMINIO: {{ $residente["CONDOMINIO"] }}</p>
-                                        <p>ESTADO DEL RESIDENTE: {{ $residente["ESTADO_PERSONA"] }}</p>
-                                        <p>PARENTESCO: {{ $residente["PARENTESCO"] }}</p>
-                                       
-                                        
-
-                                    </div>
-                                    <div class="modal-footer">
-                                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    <!-- Modal de edición de residente -->
-<div class="modal fade" id="editarResidente{{ $residente['ID_PERSONA'] }}" tabindex="-1" role="dialog" aria-labelledby="editarResidente{{ $residente['ID_PERSONA'] }}Label" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="editarResidente{{ $residente['ID_PERSONA'] }}Label">Editar Residente</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <!-- Formulario de edición de residente --> 
-                <form class="editar-residente-form" data-id="{{$residente['ID_PERSONA'] }}" method="POST" enctype="multipart/form-data">
-                @csrf
-                    <div class="form-group">
-                        <label for="nombre">NOMBRE DEL RESIDENTE:</label>
-                        <input type="text" class="form-control" id="nombre" name="nombre" value="{{ $residente['NOMBRE_PERSONA'] }}" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="dni">DNI DEL RESIDENTE:</label>
-                        <input type="text" class="form-control" id="dni" name="dni" value="{{ $residente['DNI_PERSONA'] }}" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="id_estado_persona">ESTADO DEL RESIDENTE:</label>
-                        <select class="form-control" id="id_estado_persona" name="id_estado_persona" required>
-                        @foreach($estadopersona as $estado)
-                        <option value="{{ $estado->ID_ESTADO_PERSONA }}"{{ $residente['ID_ESTADO_PERSONA'] == $estado->ID_ESTADO_PERSONA ? 'selected' : '' }}>{{ $estado->DESCRIPCION }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="id_tipo_contacto">TIPO DE CONTACTO DEL RESIDENTE:</label>
-                        <select class="form-control" id="id_tipo_contacto" name="id_tipo_contacto" required>
-                            @foreach($TipoContacto as $tipoContacto)
-                                <option value="{{ $tipoContacto->ID_TIPO_CONTACTO }}"{{ $residente['ID_TIPO_CONTACTO'] == $tipoContacto->ID_TIPO_CONTACTO ? ' selected' : '' }}>
-                                    {{ $tipoContacto->DESCRIPCION }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="contacto_descripcion">CONTACTO DEL RESIDENTE:</label>
-                        <input type="text" class="form-control" id="contacto_descripcion" name="contacto_descripcion" value="{{ $residente['CONTACTO'] }}" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="ID_TIPO_PERSONA">TIPO DE RESIDENTE:</label>
-                        <select class="form-control" id="ID_TIPO_PERSONA" name="ID_TIPO_PERSONA" required>
-                        @foreach($tipopersona as $tipo)
-                        <option value="{{ $tipo->ID_TIPO_PERSONA }}"{{ $residente['ID_TIPO_PERSONA'] == $tipo->ID_TIPO_PERSONA ? 'selected' : '' }}>{{ $tipo->DESCRIPCION }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-
-
-                    <div class="form-group">
-                        <label for="id_parentesco">PARENTESCO DEL RESIDENTE:</label>
-                        <select class="form-control" id="id_parentesco" name="id_parentesco" required>
-                        @foreach($Parentesco as $parentesco)
-                        <option value="{{ $parentesco->ID_PARENTESCO }}"{{ $residente['ID_PARENTESCO'] == $parentesco->ID_PARENTESCO ? 'selected' : '' }}>{{ $parentesco->DESCRIPCION }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                   
-                    <div class="form-group">
-    <label for="condominio_descripcion">CONDOMINIO:</label>
-    <select class="form-control" id="condominio_descripcion" name="condominio_descripcion" required style="height: 40px; overflow-y: auto;">
-        @foreach($Condominio as $condominio)
-            <option value="{{ $condominio->DESCRIPCION }}" 
-                {{ $condominio->DESCRIPCION == $residente['CONDOMINIO'] ? 'selected' : '' }}>
-                {{ $condominio->DESCRIPCION }}
-            </option>
-        @endforeach
-    </select>
-</div>
-
-                        
-
-                    <div class="form-group">
-                        <label for="id_padre">ID PADRE:</label>
-                        <input type="number" class="form-control" id="id_padre" name="id_padre" value="{{ $residente['ID_PADRE'] }}" >
-                    </div>
-                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
-                            <!-- Modal de eliminación de residente -->
-<div class="modal fade" id="eliminarResidente{{ $residente['ID_PERSONA'] }}" tabindex="-1" role="dialog" aria-labelledby="eliminarResidente{{ $residente['ID_PERSONA'] }}Label" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="eliminarResidente{{ $residente['ID_PERSONA'] }}Label">Eliminar Residente</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p>¿Estás seguro de que deseas eliminar al residente "{{ $residente['NOMBRE_PERSONA'] }}"?</p>
-            </div>
-            <div class="modal-footer">
-            <form class="eliminar-residente-form" data-id="{{  $residente['ID_PERSONA'] }}">
-            @csrf
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-danger">Eliminar</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-                        @endforeach
-                    </tbody>
                 </table>
             </div>
 
@@ -378,6 +214,153 @@
                         <button type="button" class="btn btn-info" data-toggle="modal" data-target="#editarResidente${row.ID_PERSONA}">Editar</button>
                         <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#eliminarResidente${row.ID_PERSONA}">Eliminar</button>
                         <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#mostrarMas${row.ID_PERSONA}">Mostrar Mas</button>
+                        
+                        
+                        
+                        <!-- Modal de "Mostrar más" -->
+                            <div class="modal fade" id="mostrarMas${row.ID_PERSONA}" tabindex="-1" role="dialog" aria-labelledby="mostrarMas${row.ID_PERSONA} Label" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="mostrarMas${row.ID_PERSONA} Label">Detalles del Usuario</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>ID DEL RESIDENTE: ${row.ID_PERSONA}</p>
+                                        <p>NOMBRE DEL RESIDENTE: ${row.NOMBRE_PERSONA}</p>
+                                        <p>DNI DEL RESIDENTE: ${row.DNI_PERSONA}</p>
+                                        <p>TIPO DE CONTACTO DEL RESIDENTE:${row.TIPO_CONTACTO}</p>
+                                        <p>CONTACTO DEL RESIDENTE: ${row.CONTACTO}</p>
+                                        <p>TIPO DE RESIDENTE: ${row.TIPO_PERSONA}</p>
+                                         <p>CONDOMINIO:${row.CONDOMINIO}</p>
+                                        <p>ESTADO DEL RESIDENTE: ${row.ESTADO_PERSONA}</p>
+                                        <p>PARENTESCO: ${row.PARENTESCO}</p>
+                                       
+                                        
+
+                                    </div>
+                                    <div class="modal-footer">
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        
+                        
+                        
+                       
+                   <!-- Modal de edición de residente -->
+                        <div class="modal fade" id="editarResidente${row.ID_PERSONA}" tabindex="-1" role="dialog" aria-labelledby="editarResidente${row.ID_PERSONA}Label" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="editarResidente${row.ID_PERSONA}Label">Editar Residente</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form id="editarResidenteForm" class= "editarResidenteForm" data-id="${row.ID_PERSONA}" method="POST" enctype="multipart/form-data">
+                                            @csrf
+                    <div class="form-group">
+                        <label for="nombre">NOMBRE DEL RESIDENTE:</label>
+                        <input type="text" class="form-control" id="nombre" name="nombre" value="${row.NOMBRE_PERSONA}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="dni">DNI DEL RESIDENTE:</label>
+                        <input type="text" class="form-control" id="dni" name="dni" value="${row.DNI_PERSONA}" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="id_estado_persona">ESTADO DEL RESIDENTE:</label>
+                        <select class="form-control" id="id_estado_persona" name="id_estado_persona" required>
+                        @foreach($estadopersona as $estado)
+                        <option value="{{ $estado->ID_ESTADO_PERSONA }}" ${row.ID_ESTADO_PERSONA == {{ $estado->ID_ESTADO_PERSONA }} ? 'selected' : ''}>{{ $estado->DESCRIPCION }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="id_tipo_contacto">TIPO DE CONTACTO DEL RESIDENTE:</label>
+                        <select class="form-control" id="id_tipo_contacto" name="id_tipo_contacto" required>
+                            @foreach($TipoContacto as $tipoContacto)
+                                <option value="{{ $tipoContacto->ID_TIPO_CONTACTO }}"${row.ID_TIPO_CONTACTO == {{$tipoContacto->ID_TIPO_CONTACTO}} ? ' selected' : '' }>
+                                    {{ $tipoContacto->DESCRIPCION }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="contacto_descripcion">CONTACTO DEL RESIDENTE:</label>
+                        <input type="text" class="form-control" id="contacto_descripcion" name="contacto_descripcion" value="${row.CONTACTO}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="ID_TIPO_PERSONA">TIPO DE RESIDENTE:</label>
+                        <select class="form-control" id="ID_TIPO_PERSONA" name="ID_TIPO_PERSONA" required>
+                        @foreach($tipopersona as $tipo)
+                        <option value="{{ $tipo->ID_TIPO_PERSONA }}" ${row.ID_TIPO_PERSONA == {{ $tipo->ID_TIPO_PERSONA }} ? 'selected' : '' }>{{ $tipo->DESCRIPCION }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label for="id_parentesco">PARENTESCO DEL RESIDENTE:</label>
+                        <select class="form-control" id="id_parentesco" name="id_parentesco" required>
+                        @foreach($Parentesco as $parentesco)
+                        <option value="{{ $parentesco->ID_PARENTESCO }}"${row.ID_PARENTESCO == {{$parentesco->ID_PARENTESCO}} ? 'selected' : '' } >{{ $parentesco->DESCRIPCION }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                   
+                   <div class="form-group">
+    <label for="condominio_descripcion">CONDOMINIO:</label>
+    <select class="form-control" id="condominio_descripcion" name="condominio_descripcion" required style="height: 40px; overflow-y: auto;">
+        @foreach($Condominio as $condominio)
+            <option value="{{ $condominio->ID_CONDOMINIO }}" ${row.ID_CONDOMINIO == {{ $condominio->ID_CONDOMINIO }} ? 'selected' : ''}>
+                {{ $condominio->DESCRIPCION }}
+            </option>
+        @endforeach
+    </select>
+</div>
+
+                
+                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+                            <!-- Modal de eliminación de residente -->
+<div class="modal fade" id="eliminarResidente${row.ID_PERSONA}" tabindex="-1" role="dialog" aria-labelledby="eliminarResidente${row.ID_PERSONA}Label" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="eliminarResidente${row.ID_PERSONA}Label">Eliminar Residente</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>¿Estás seguro de que deseas eliminar al residente "${row.NOMBRE_PERSONA}"?</p>
+            </div>
+            <div class="modal-footer">
+            <form class="eliminar-residente-form" data-id="${row.ID_PERSONA}">
+            @csrf
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-danger">Eliminar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
                     `;
                 }
             }
@@ -602,7 +585,8 @@ $('#nuevo-residente-form').on('submit', function(event) {
     });
 });
 // AJAX form submission for editing a resident
-$('.editar-residente-form').on('submit', function(event) {
+$(document).on('submit', '.editarResidenteForm', function(event) {
+
     event.preventDefault();
 
     var residenteId = $(this).data('id');
@@ -641,7 +625,7 @@ $('.editar-residente-form').on('submit', function(event) {
     });
 });
 // AJAX form submission for deleting a resident
-$('.eliminar-residente-form').on('submit', function(event) {
+$(document).on('submit', '.eliminar-residente-form', function(event) {
     event.preventDefault();
 
     var residenteId = $(this).data('id');
