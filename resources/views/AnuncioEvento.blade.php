@@ -20,11 +20,11 @@
                         @foreach($anunciosEventos as $evento)
                             <div class="timeline-item">
                                 <span class="time">
-                                <i class="fas fa-clock"></i>  {{ $evento['FECHA_HORA'] ? \Carbon\Carbon::parse($evento["FECHA_HORA"])->setTimezone('America/Guatemala')->format('Y-m-d H:i') : '' }}
+                                <i class="fas fa-clock"></i>  {{ $evento['FECHA_HORA'] ? \Carbon\Carbon::parse($evento["FECHA_HORA"])->format('Y-m-d H:i') : '' }}
                                 </span>
 
                                 <h3 class="timeline-header">
-                                    <a href="#" class="titulo-evento" data-toggle="modal" data-target="#verEventoModal" data-titulo="{{ $evento['TITULO'] }}" data-descripcion="{{ $evento['DESCRIPCION'] }}" data-imagen="{{ asset('images/'.$evento['IMAGEN']) }}" data-fecha-hora="{{ \Carbon\Carbon::parse($evento["FECHA_HORA"])->setTimezone('America/Tegucigalpa')->format('Y-m-d H:i') }}">{{ $evento['TITULO'] }}</a>
+                                    <a href="#" class="titulo-evento" data-toggle="modal" data-target="#verEventoModal" data-titulo="{{ $evento['TITULO'] }}" data-descripcion="{{ $evento['DESCRIPCION'] }}" data-imagen="{{ asset('images/'.$evento['IMAGEN']) }}" data-fecha-hora="{{ \Carbon\Carbon::parse($evento["FECHA_HORA"])->format('Y-m-d H:i') }}">{{ $evento['TITULO'] }}</a>
                                 </h3>
                                 {{ $evento['DESCRIPCION'] }}
                                 <div class="timeline-body">
