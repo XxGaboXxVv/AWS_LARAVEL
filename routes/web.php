@@ -119,9 +119,9 @@ Route::post('password/reset', [UsuarioController::class, 'resetPassword'])->name
 /*RUTAS PARA ANUNCIOS Y EVENTOS*/ 
 Route::middleware([App\Http\Middleware\LogPageChanges::class])->group(function () {
     Route::get('/AnuncioEvento', [AnuncioEventoController::class, 'index'])->name('AnuncioEvento')->middleware(middleware:'auth');;
-    Route::post('/anuncios-eventos/guardar', [AnuncioEventoController::class, 'guardar'])->name('guardar_anuncio_evento');
-    Route::post('/anuncios-eventos/actualizar/{id}', [AnuncioEventoController::class, 'actualizar'])->name('actualizar_anuncio_evento');
-    Route::post('/anuncios-eventos/eliminar', [AnuncioEventoController::class, 'eliminar'])->name('eliminar_anuncio_evento');
+    Route::post('/anuncios-eventos/guardar', [AnuncioEventoController::class, 'guardar'])->name('guardar_anuncio_evento')->middleware('auth');
+    Route::post('/anuncios-eventos/actualizar/{id}', [AnuncioEventoController::class, 'actualizar'])->name('actualizar_anuncio_evento')->middleware('auth');
+    Route::post('/anuncios-eventos/eliminar', [AnuncioEventoController::class, 'eliminar'])->name('eliminar_anuncio_evento')->middleware('auth');
 });
 
 
@@ -130,9 +130,9 @@ Route::middleware([App\Http\Middleware\LogPageChanges::class])->group(function (
 Route::get('/Residentes', [ResidentesController::class, 'GetResidentes'])->name('Residentes')->middleware('auth');
 Route::get('/Residentes-fetch', [ResidentesController::class, 'fetchResidentes'])->name('Residentes-fetch')->middleware('auth');
 Route::post('/residentes/crear', [ResidentesController::class, 'crear'])->name('residentes.crear')->middleware('auth');
-Route::post('/residentes/editar/{id}', [ResidentesController::class, 'editar'])->name('residentes.editar');
+Route::post('/residentes/editar/{id}', [ResidentesController::class, 'editar'])->name('residentes.editar')->middleware('auth');
 Route::post('/residentes/eliminar/{id}', [ResidentesController::class, 'eliminar'])->name('residentes.eliminar')->middleware('auth');
-Route::get('/reporte-residentes', [ResidentesController::class, 'generarReporte'])->name('residentes.reporte');
+Route::get('/reporte-residentes', [ResidentesController::class, 'generarReporte'])->name('residentes.reporte')->middleware('auth');
 
     });
 
@@ -153,10 +153,10 @@ Route::middleware([App\Http\Middleware\LogPageChanges::class])->group(function (
 Route::middleware([App\Http\Middleware\LogPageChanges::class])->group(function () {
     Route::get('/VisitanteRecurrente', [VisitanteRecurrente::class, 'getRecurrente'])->name('VisitanteRecurrente')->middleware('auth');
     Route::get('/Visitantes_Recurrentes-fetch', [VisitanteRecurrente::class, 'fetchVisitantesRecurrentes'])->name('Visitantes_Recurrentes.fetch')->middleware('auth');
-    Route::post('/visitante-recurrente/crear', [VisitanteRecurrente::class, 'crear'])->name('visitante-recurrente.crear');
-    Route::post('/visitante-recurrente/actualizar/{id}', [VisitanteRecurrente::class, 'actualizar'])->name('visitante-recurrente.actualizar');
-    Route::post('/visitante-recurrente/eliminar/{id}', [VisitanteRecurrente::class, 'eliminar'])->name('visitante-recurrente.eliminar');
-    Route::get('/reporte-visitante-recurrente', [VisitanteRecurrente::class, 'generarReporte'])->name('visitante-recurrente.reporte');
+    Route::post('/visitante-recurrente/crear', [VisitanteRecurrente::class, 'crear'])->name('visitante-recurrente.crear')->middleware('auth');
+    Route::post('/visitante-recurrente/actualizar/{id}', [VisitanteRecurrente::class, 'actualizar'])->name('visitante-recurrente.actualizar')->middleware('auth');
+    Route::post('/visitante-recurrente/eliminar/{id}', [VisitanteRecurrente::class, 'eliminar'])->name('visitante-recurrente.eliminar')->middleware('auth');
+    Route::get('/reporte-visitante-recurrente', [VisitanteRecurrente::class, 'generarReporte'])->name('visitante-recurrente.reporte')->middleware('auth');
 });
 
 
@@ -165,20 +165,20 @@ Route::middleware([App\Http\Middleware\LogPageChanges::class])->group(function (
 Route::middleware([App\Http\Middleware\LogPageChanges::class])->group(function () {
     Route::get('/reservaciones', [ReservacionesController::class, 'reserva'])->name('reservaciones')->middleware('auth');
     Route::get('/Reservaciones-fetch', [ReservacionesController::class, 'fetchReservaciones'])->name('Reservaciones.fetch')->middleware('auth');
-    Route::post('/reservaciones/guardar', [ReservacionesController::class, 'crear'])->name('reservaciones.guardar');
-    Route::post('/reservaciones/actualizar/{id}', [ReservacionesController::class, 'actualizar'])->name('reservaciones.actualizar');
-    Route::post('/reservaciones/eliminar/{id}', [ReservacionesController::class, 'eliminar'])->name('reservaciones.eliminar');
-    Route::get('/reporte-reservaciones', [ReservacionesController::class, 'generarReporte'])->name('reservaciones.reporte');
+    Route::post('/reservaciones/guardar', [ReservacionesController::class, 'crear'])->name('reservaciones.guardar')->middleware('auth');
+    Route::post('/reservaciones/actualizar/{id}', [ReservacionesController::class, 'actualizar'])->name('reservaciones.actualizar')->middleware('auth');
+    Route::post('/reservaciones/eliminar/{id}', [ReservacionesController::class, 'eliminar'])->name('reservaciones.eliminar')->middleware('auth');
+    Route::get('/reporte-reservaciones', [ReservacionesController::class, 'generarReporte'])->name('reservaciones.reporte')->middleware('auth');
 });
 
 /*RUTAS PARA PERFIL*/
 Route::middleware([App\Http\Middleware\LogPageChanges::class])->group(function () {
 Route::middleware(['auth'])->group(function () {
-Route::get('/perfil', [PerfilController::class, 'mostrar'])->name('perfil');
-Route::post('/perfil/actualizar', [PerfilController::class, 'actualizarPerfil'])->name('perfil.actualizar');
-Route::post('/perfil/cambiar-contraseña', [PerfilController::class, 'cambiarContraseña'])->name('perfil.cambiarContraseña');
-Route::post('/perfil/2fa', [PerfilController::class, 'toggle2fa'])->name('perfil.2fa');
-Route::get('/Perfil', [PerfilController::class, 'completeRegistration'])->name('completeRegistration');
+Route::get('/perfil', [PerfilController::class, 'mostrar'])->name('perfil')->middleware('auth');
+Route::post('/perfil/actualizar', [PerfilController::class, 'actualizarPerfil'])->name('perfil.actualizar')->middleware('auth');
+Route::post('/perfil/cambiar-contraseña', [PerfilController::class, 'cambiarContraseña'])->name('perfil.cambiarContraseña')->middleware('auth');
+Route::post('/perfil/2fa', [PerfilController::class, 'toggle2fa'])->name('perfil.2fa')->middleware('auth');
+Route::get('/Perfil', [PerfilController::class, 'completeRegistration'])->name('completeRegistration')->middleware('auth');
 
     });
     });
@@ -233,28 +233,28 @@ Route::middleware([App\Http\Middleware\LogPageChanges::class])->group(function (
 /*Estado RESERVA*/
 Route::middleware([App\Http\Middleware\LogPageChanges::class])->group(function () {
     Route::get('/Estado/de/Reservacion', [EstadoReservacion::class, 'getEstadoReservacion'])->name('Estado_de_Reservacion')->middleware(middleware:'auth');;
-    Route::post('/EstadoReservacion/guardar', [EstadoReservacion::class, 'crear'])->name('estados_reservacion.guardar');
-    Route::post('/EstadoReservacion/actualizar/{id}', [EstadoReservacion::class, 'actualizar'])->name('estados_reservacion.actualizar');
-    Route::post('/EstadoReservacion/eliminar/{id}', [EstadoReservacion::class, 'eliminar'])->name('estados_reservacion.eliminar');
-    Route::get('/reporte-EstadoReservacion', [EstadoReservacion::class, 'generarReporte'])->name('estados_reservacion.reporte');
+    Route::post('/EstadoReservacion/guardar', [EstadoReservacion::class, 'crear'])->name('estados_reservacion.guardar')->middleware('auth');
+    Route::post('/EstadoReservacion/actualizar/{id}', [EstadoReservacion::class, 'actualizar'])->name('estados_reservacion.actualizar')->middleware('auth');
+    Route::post('/EstadoReservacion/eliminar/{id}', [EstadoReservacion::class, 'eliminar'])->name('estados_reservacion.eliminar')->middleware('auth');
+    Route::get('/reporte-EstadoReservacion', [EstadoReservacion::class, 'generarReporte'])->name('estados_reservacion.reporte')->middleware('auth');
     });
 /*Estado persona*/
 Route::middleware([App\Http\Middleware\LogPageChanges::class])->group(function () {
     Route::get('/Estado/de/Persona', [EstadoPersonaController::class, 'getEstadoPersona'])->name('Estado_de_Persona')->middleware(middleware:'auth');;
-    Route::post('/EstadoPersona/guardar', [EstadoPersonaController::class, 'crear'])->name('estados_persona.guardar');
-    Route::post('/EstadoPersona/actualizar/{id}', [EstadoPersonaController::class, 'actualizar'])->name('estados_persona.actualizar');
-    Route::post('/EstadoPersona/eliminar/{id}', [EstadoPersonaController::class, 'eliminar'])->name('estados_persona.eliminar');
-    Route::get('/reporte-EstadoPersona', [EstadoPersonaController::class, 'generarReporte'])->name('estados_persona.reporte');
+    Route::post('/EstadoPersona/guardar', [EstadoPersonaController::class, 'crear'])->name('estados_persona.guardar')->middleware('auth');
+    Route::post('/EstadoPersona/actualizar/{id}', [EstadoPersonaController::class, 'actualizar'])->name('estados_persona.actualizar')->middleware('auth');
+    Route::post('/EstadoPersona/eliminar/{id}', [EstadoPersonaController::class, 'eliminar'])->name('estados_persona.eliminar')->middleware('auth');
+    Route::get('/reporte-EstadoPersona', [EstadoPersonaController::class, 'generarReporte'])->name('estados_persona.reporte')->middleware('auth');
     });
 
 
 /*Estado Usuario*/
 Route::middleware([App\Http\Middleware\LogPageChanges::class])->group(function () {
     Route::get('/Estado/de/Usuario', [EstadodeUsuario::class, 'getEstadodeUsuario'])->name('Estado_de_Usuario')->middleware(middleware:'auth');;
-    Route::post('/EstadodeUsuario/guardar', [EstadodeUsuario::class, 'crear'])->name('estados.guardar');
-    Route::post('/EstadodeUsuario/actualizar/{id}', [EstadodeUsuario::class, 'actualizar'])->name('estados.actualizar');
-    Route::post('/EstadodeUsuario/eliminar/{id}', [EstadodeUsuario::class, 'eliminar'])->name('estados.eliminar');
-    Route::get('/reporte-EstadodeUsuario', [EstadodeUsuario::class, 'generarReporte'])->name('estados.reporte');
+    Route::post('/EstadodeUsuario/guardar', [EstadodeUsuario::class, 'crear'])->name('estados.guardar')->middleware('auth');
+    Route::post('/EstadodeUsuario/actualizar/{id}', [EstadodeUsuario::class, 'actualizar'])->name('estados.actualizar')->middleware('auth');
+    Route::post('/EstadodeUsuario/eliminar/{id}', [EstadodeUsuario::class, 'eliminar'])->name('estados.eliminar')->middleware('auth');
+    Route::get('/reporte-EstadodeUsuario', [EstadodeUsuario::class, 'generarReporte'])->name('estados.reporte')->middleware('auth');
     });
 
 /*MANTENIMIENTO*/
@@ -262,19 +262,19 @@ Route::middleware([App\Http\Middleware\LogPageChanges::class])->group(function (
 Route::middleware([App\Http\Middleware\LogPageChanges::class])->group(function () {
     Route::get('/Instalaciones', [Instalaciones::class, 'getInstalaciones'])->name('Instalaciones')->middleware(middleware:'auth');;
     Route::post('/Instalaciones/crear', [Instalaciones::class, 'crear'])->name('Instalaciones.crear');
-    Route::post('/Instalaciones/actualizar/{id}', [Instalaciones::class, 'actualizar'])->name('Instalaciones.actualizar');
-    Route::post('/Instalaciones/eliminar/{id}', [Instalaciones::class, 'eliminar'])->name('Instalaciones.eliminar');
-    Route::get('/Instalaciones/reporte', [Instalaciones::class, 'generarReporte'])->name('Instalaciones.reporte');
+    Route::post('/Instalaciones/actualizar/{id}', [Instalaciones::class, 'actualizar'])->name('Instalaciones.actualizar')->middleware('auth');
+    Route::post('/Instalaciones/eliminar/{id}', [Instalaciones::class, 'eliminar'])->name('Instalaciones.eliminar')->middleware('auth');
+    Route::get('/Instalaciones/reporte', [Instalaciones::class, 'generarReporte'])->name('Instalaciones.reporte')->middleware('auth');
 });
 
 /*Condominios*/
 Route::middleware([App\Http\Middleware\LogPageChanges::class])->group(function () {
     Route::get('/Condominios', [Condominios::class, 'getCondominios'])->name('Condominios')->middleware(middleware:'auth');;
     Route::get('/Condominios-fetch', [Condominios::class, 'fetchCondominios'])->name('Condominios.fetch')->middleware('auth');
-    Route::post('/Condominios/guardar', [Condominios::class, 'crear'])->name('condominios.store');
-    Route::post('/Condominios/actualizar/{id}', [Condominios::class, 'actualizar'])->name('condominios.actualizar');
-    Route::post('/Condominios/eliminar/{id}', [Condominios::class, 'eliminar'])->name('condominios.eliminar');
-    Route::get('/reporte-Condominios', [Condominios::class, 'generarReporte'])->name('condominios.reporte');
+    Route::post('/Condominios/guardar', [Condominios::class, 'crear'])->name('condominios.store')->middleware('auth');
+    Route::post('/Condominios/actualizar/{id}', [Condominios::class, 'actualizar'])->name('condominios.actualizar')->middleware('auth');
+    Route::post('/Condominios/eliminar/{id}', [Condominios::class, 'eliminar'])->name('condominios.eliminar')->middleware('auth');
+    Route::get('/reporte-Condominios', [Condominios::class, 'generarReporte'])->name('condominios.reporte')->middleware('auth');
     });
 
 
@@ -282,10 +282,10 @@ Route::middleware([App\Http\Middleware\LogPageChanges::class])->group(function (
 /*Backup de la base de datos */
 Route::middleware([App\Http\Middleware\LogPageChanges::class])->group(function () {
     Route::get('backup', [BackupController::class, 'listBackups'])->name('backup')->middleware(middleware:'auth');;
-    Route::get('backup/create', [BackupController::class, 'createBackup'])->name('backups.create');
-    Route::get('backup/download/{file_name}', [BackupController::class, 'downloadBackup'])->name('backups.download');
-    Route::get('/backups/zip/{file_name}', [BackupController::class, 'convertToZip'])->name('backups.zip');
-    Route::delete('/backups/{file_name}', [BackupController::class, 'deleteBackup'])->name('backups.delete');
+    Route::get('backup/create', [BackupController::class, 'createBackup'])->name('backups.create')->middleware('auth');
+    Route::get('backup/download/{file_name}', [BackupController::class, 'downloadBackup'])->name('backups.download')->middleware('auth');
+    Route::get('/backups/zip/{file_name}', [BackupController::class, 'convertToZip'])->name('backups.zip')->middleware('auth');
+    Route::delete('/backups/{file_name}', [BackupController::class, 'deleteBackup'])->name('backups.delete')->middleware('auth');
     });
     
 
@@ -293,19 +293,19 @@ Route::middleware([App\Http\Middleware\LogPageChanges::class])->group(function (
 /* Rutas para TipoPersona */
 Route::middleware([App\Http\Middleware\LogPageChanges::class])->group(function () {
     Route::get('/TipoPersona', [TipoPersona::class, 'getTipoPersona'])->name('TipoPersona')->middleware('auth');
-    Route::post('/tipo-persona/crear', [TipoPersona::class, 'crear'])->name('tipo-persona.crear');
-    Route::post('/tipo-persona/actualizar/{id}', [TipoPersona::class, 'actualizar'])->name('tipo-persona.actualizar');
-    Route::post('/tipo-persona/eliminar/{id}', [TipoPersona::class, 'eliminar'])->name('tipo-persona.eliminar');
-    Route::get('/reporte-tipo-persona', [TipoPersona::class, 'generarReporte'])->name('tipo-persona.reporte');
+    Route::post('/tipo-persona/crear', [TipoPersona::class, 'crear'])->name('tipo-persona.crear')->middleware('auth');
+    Route::post('/tipo-persona/actualizar/{id}', [TipoPersona::class, 'actualizar'])->name('tipo-persona.actualizar')->middleware('auth');
+    Route::post('/tipo-persona/eliminar/{id}', [TipoPersona::class, 'eliminar'])->name('tipo-persona.eliminar')->middleware('auth');
+    Route::get('/reporte-tipo-persona', [TipoPersona::class, 'generarReporte'])->name('tipo-persona.reporte')->middleware('auth');
 });
 
  /*Historial de contraseñas*/
  Route::middleware([App\Http\Middleware\LogPageChanges::class])->group(function () {
     Route::get('/Historial/Contraseñas', [HistorialContraseñas::class, 'getHistorialContraseñas'])->name('Historial_Contraseñas')->middleware(middleware:'auth');
-    Route::post('/HistorialContraseñas/guardar', [HistorialContraseñas::class, 'crear'])->name('historial.guardar');
-    Route::post('/HistorialContraseñas/actualizar/{id}', [HistorialContraseñas::class, 'actualizar'])->name('historial.actualizar');
-    Route::post('/HistorialContraseñas/eliminar/{id}', [HistorialContraseñas::class, 'eliminar'])->name('historial.eliminar');
-    Route::get('/reporte-HistorialContraseñas', [HistorialContraseñas::class, 'generarReporte'])->name('historial.reporte');
+    Route::post('/HistorialContraseñas/guardar', [HistorialContraseñas::class, 'crear'])->name('historial.guardar')->middleware('auth');
+    Route::post('/HistorialContraseñas/actualizar/{id}', [HistorialContraseñas::class, 'actualizar'])->name('historial.actualizar')->middleware('auth');
+    Route::post('/HistorialContraseñas/eliminar/{id}', [HistorialContraseñas::class, 'eliminar'])->name('historial.eliminar')->middleware('auth');
+    Route::get('/reporte-HistorialContraseñas', [HistorialContraseñas::class, 'generarReporte'])->name('historial.reporte')->middleware('auth');
     });
 
 
@@ -313,20 +313,20 @@ Route::middleware([App\Http\Middleware\LogPageChanges::class])->group(function (
     
 Route::middleware([App\Http\Middleware\LogPageChanges::class])->group(function () {
     Route::get('/tipo-contacto', [TipoContacto::class, 'getTipoContacto'])->name('tipo-contacto')->middleware(middleware:'auth');;
-    Route::post('/tipo-contacto/crear', [TipoContacto::class, 'crear'])->name('tipo-contacto.crear');
-    Route::post('/tipo-contacto/actualizar/{id}', [TipoContacto::class, 'actualizar'])->name('tipo-contacto.actualizar');
-    Route::post('/tipo-contacto/eliminar/{id}', [TipoContacto::class, 'eliminar'])->name('tipo-contacto.eliminar');
-    Route::get('/tipo-contacto/reporte', [TipoContacto::class, 'generarReporte'])->name('tipo-contacto.reporte');
+    Route::post('/tipo-contacto/crear', [TipoContacto::class, 'crear'])->name('tipo-contacto.crear')->middleware('auth');
+    Route::post('/tipo-contacto/actualizar/{id}', [TipoContacto::class, 'actualizar'])->name('tipo-contacto.actualizar')->middleware('auth');
+    Route::post('/tipo-contacto/eliminar/{id}', [TipoContacto::class, 'eliminar'])->name('tipo-contacto.eliminar')->middleware('auth');
+    Route::get('/tipo-contacto/reporte', [TipoContacto::class, 'generarReporte'])->name('tipo-contacto.reporte')->middleware('auth');
     });
     
 
 /* Permisos */
 Route::middleware([App\Http\Middleware\LogPageChanges::class])->group(function () {
     Route::get('/Permisos', [Permisos::class, 'getPermisos'])->name('Permisos')->middleware('auth');
-    Route::post('/permisos/crear', [Permisos::class, 'crear'])->name('permisos.crear');
-    Route::post('/permisos/actualizar/{id}', [Permisos::class, 'actualizar'])->name('permisos.actualizar');
-    Route::post('/permisos/eliminar/{id}', [Permisos::class, 'eliminar'])->name('permisos.eliminar');
-    Route::get('/reporte-permisos', [Permisos::class, 'generarReporte'])->name('permisos.reporte');
+    Route::post('/permisos/crear', [Permisos::class, 'crear'])->name('permisos.crear')->middleware('auth');
+    Route::post('/permisos/actualizar/{id}', [Permisos::class, 'actualizar'])->name('permisos.actualizar')->middleware('auth');
+    Route::post('/permisos/eliminar/{id}', [Permisos::class, 'eliminar'])->name('permisos.eliminar')->middleware('auth');
+    Route::get('/reporte-permisos', [Permisos::class, 'generarReporte'])->name('permisos.reporte')->middleware('auth');
 });
 
 
@@ -334,19 +334,19 @@ Route::middleware([App\Http\Middleware\LogPageChanges::class])->group(function (
 
 Route::middleware([App\Http\Middleware\LogPageChanges::class])->group(function () {
     Route::get('/tipo-condominio', [TipoCondominio::class, 'getTipoCondominio'])->name('tipo-condominio')->middleware(middleware:'auth');;
-    Route::post('/tipo-condominio/crear', [TipoCondominio::class, 'crear'])->name('tipo-condominio.crear');
-    Route::post('/tipo-condominio/actualizar/{id}', [TipoCondominio::class, 'actualizar'])->name('tipo-condominio.actualizar');
-    Route::post('/tipo-condominio/eliminar/{id}', [TipoCondominio::class, 'eliminar'])->name('tipo-condominio.eliminar');
-    Route::get('/tipo-condominio/reporte', [TipoCondominio::class, 'generarReporte'])->name('tipo-condominio.reporte');
+    Route::post('/tipo-condominio/crear', [TipoCondominio::class, 'crear'])->name('tipo-condominio.crear')->middleware('auth');
+    Route::post('/tipo-condominio/actualizar/{id}', [TipoCondominio::class, 'actualizar'])->name('tipo-condominio.actualizar')->middleware('auth');
+    Route::post('/tipo-condominio/eliminar/{id}', [TipoCondominio::class, 'eliminar'])->name('tipo-condominio.eliminar')->middleware('auth');
+    Route::get('/tipo-condominio/reporte', [TipoCondominio::class, 'generarReporte'])->name('tipo-condominio.reporte')->middleware('auth');
 });
 
 /* RUTAS PARA PARAMETROS */
 Route::middleware([App\Http\Middleware\LogPageChanges::class])->group(function () {
     Route::get('/parametros', [Parametros::class, 'getparametros'])->name('parametros')->middleware(middleware:'auth');;
-    Route::post('/parametros/crear', [Parametros::class, 'crear'])->name('parametros.store');
-    Route::post('/parametros/actualizar/{id}', [Parametros::class, 'actualizar'])->name('parametros.update');
-    Route::post('/parametros/eliminar/{id}', [Parametros::class, 'eliminar'])->name('parametros.destroy');
-    Route::get('/parametros/reporte', [Parametros::class, 'generarReporte'])->name('parametros.reporte');
+    Route::post('/parametros/crear', [Parametros::class, 'crear'])->name('parametros.store')->middleware('auth');
+    Route::post('/parametros/actualizar/{id}', [Parametros::class, 'actualizar'])->name('parametros.update')->middleware('auth');
+    Route::post('/parametros/eliminar/{id}', [Parametros::class, 'eliminar'])->name('parametros.destroy')->middleware('auth');
+    Route::get('/parametros/reporte', [Parametros::class, 'generarReporte'])->name('parametros.reporte')->middleware('auth');
 });
 
 
