@@ -75,7 +75,7 @@ class BitacoraVisita extends Controller
 
         
         if (!empty($visita['FECHA_HORA'])) {
-            $visita['FECHA_HORA'] = \Carbon\Carbon::parse($visita['FECHA_HORA'])->setTimezone('America/Tegucigalpa')->format('Y-m-d H:i:s');
+            $visita['FECHA_HORA'] = \Carbon\Carbon::parse($visita['FECHA_HORA'])->format('Y-m-d H:i:s');
         } else {
             $visita['FECHA_HORA'] = '';
         }
