@@ -23,7 +23,14 @@
             </ul>
         </div>
     @endif
-    
+   
+    @section('css')
+    <style>
+        .login-page {
+            background-color: #33680c !important; /* Verde claro */
+        }
+    </style>
+@stop
     
 
     <!-- Formulario de inicio de sesión -->
