@@ -1,7 +1,7 @@
 @extends('adminlte::auth.login')
 
 @section('auth_body')
-    <p class="login-box-msg">{{ __('Ingresa para Iniciar Sesion ') }}</p>
+    <p class="login-box-msg">{{ __('Ingresa para Iniciar Sesión ') }}</p>
     
     @if (session('success'))
         <div class="alert alert-success">
@@ -23,6 +23,8 @@
             </ul>
         </div>
     @endif
+    
+    
 
     <!-- Formulario de inicio de sesión -->
     <form method="POST" action="{{ route('login') }}">
@@ -53,7 +55,7 @@
 
         <div class="row">
             <div class="col-12">
-                <button type="submit" class="btn btn-primary btn-block">{{ __('Iniciar Sesion ') }}</button>
+                <button type="submit" class="btn btn-primary btn-block">{{ __('Iniciar Sesión ') }}</button>
             </div>
         </div>
     </form>
@@ -61,7 +63,7 @@
 
 @section('auth_footer')
 <p class="mb-1">
-    <a href="{{ route('password.request') }}">{{ __('¿Olvido Su Contraseña?') }}</a>
+    <a href="{{ route('password.request') }}">{{ __('¿Olvidó Su Contraseña?') }}</a>
 </p>
 <p class="mb-0">
     <a href="{{ route('register') }}" class="text-center">{{ __('Crear Una Cuenta Nueva') }}</a>
