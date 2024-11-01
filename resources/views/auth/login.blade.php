@@ -27,7 +27,13 @@
     @section('css')
     <style>
         .login-page {
-            background-color: #33680c !important; /* Verde claro */
+            background-color: #33680c !important; /* Fondo verde */
+        }
+
+        .login-logo a {
+            color: white; /* Cambia el color del texto del logo */
+            font-size: 35px; /* Ajusta el tamaño del texto si es necesario */
+            font-weight: bold;
         }
     </style>
 @stop
@@ -48,7 +54,7 @@
         </div>
 
         <div class="input-group mb-3">
-            <input type="password" name="password" id="password" class="form-control" placeholder="{{ __('Contraseña') }}" required maxlength="70"
+            <input type="password" name="password" id="password" class="form-control" placeholder="{{ __('Contraseña') }}" required maxlength="40"
                    onpaste="return false" oncopy="return false" oncut="return false">
             <div class="input-group-append">
                 <div class="input-group-text">
