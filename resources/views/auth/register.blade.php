@@ -47,7 +47,7 @@
     <div class="form-group">
         <label for="CONTRASEÑA">{{ __('Contraseña') }}</label>
         <div class="input-group mb-3">
-            <input id="CONTRASEÑA" type="password" class="form-control @error('CONTRASEÑA') is-invalid @enderror" name="CONTRASEÑA" onpaste="return false" oncopy="return false" oncut="return false" required> 
+            <input id="CONTRASEÑA" type="password" class="form-control @error('CONTRASEÑA') is-invalid @enderror" name="CONTRASEÑA" onpaste="return false" oncopy="return false" oncut="return false" maxlength="25" required> 
             <div class="input-group-append">
                 <div class="input-group-text">
                     <span class="fas fa-eye-slash" id="toggle-password" style="cursor: pointer;"></span>
@@ -65,7 +65,7 @@
     <div class="form-group">
         <label for="CONTRASEÑA-confirm">{{ __('Confirmar Contraseña') }}</label>
         <div class="input-group mb-3">
-            <input id="CONTRASEÑA-confirm" type="password" class="form-control" name="CONTRASEÑA_confirmation" onpaste="return false" oncopy="return false" oncut="return false" required>                   
+            <input id="CONTRASEÑA-confirm" type="password" class="form-control" name="CONTRASEÑA_confirmation" onpaste="return false" oncopy="return false" oncut="return false" maxlength="25" required>                   
             <div class="input-group-append">
                 <div class="input-group-text">
                     <span class="fas fa-eye-slash" id="toggle-password-confirm" style="cursor: pointer;"></span>
