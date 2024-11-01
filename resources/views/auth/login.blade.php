@@ -54,7 +54,7 @@
         </div>
 
         <div class="input-group mb-3">
-            <input type="password" name="password" id="password" class="form-control" placeholder="{{ __('Contraseña') }}" required maxlength="40"
+            <input type="password" name="password" id="password" class="form-control" placeholder="{{ __('Contraseña') }}" required maxlength="25"
                    onpaste="return false" oncopy="return false" oncut="return false">
             <div class="input-group-append">
                 <div class="input-group-text">
