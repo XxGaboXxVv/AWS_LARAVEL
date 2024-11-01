@@ -18,7 +18,7 @@
 
     <div class="form-group">
         <label for="NOMBRE_USUARIO">{{ __('Nombre de Usuario') }}</label>
-        <input id="NOMBRE_USUARIO" type="text" class="form-control @error('NOMBRE_USUARIO') is-invalid @enderror" name="NOMBRE_USUARIO" value="{{ old('NOMBRE_USUARIO') }}" maxlength="70" pattern="[A-Z\s]+" title="Solo se permiten letras mayúsculas y espacios" oninput="this.value = this.value.toUpperCase()" onpaste="return false" oncopy="return false" oncut="return false" required autofocus>
+        <input id="NOMBRE_USUARIO" type="text" class="form-control @error('NOMBRE_USUARIO') is-invalid @enderror" name="NOMBRE_USUARIO" value="{{ old('NOMBRE_USUARIO') }}" maxlength="30" pattern="[A-Z\s]+" title="Solo se permiten letras mayúsculas y espacios" oninput="this.value = this.value.toUpperCase()" onpaste="return false" oncopy="return false" oncut="return false" required autofocus>
 
         @error('NOMBRE_USUARIO')
             <span class="invalid-feedback" role="alert">
